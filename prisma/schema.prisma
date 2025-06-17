@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pokemon {
+  id         Int           @id @default(autoincrement())
+  name_ja    String
+  name_kana  String
+  name_en    String
+  height     Float?
+  weight     Float?
+  pokedexEntries PokedexEntry[]
+  typeEntries    TypeEntry[]
+}
+
+model Region {
+  id      Int      @id
+  name_ja String
+  name_en String
+  pokedexes Pokedex[]
+}
+
+model Pokedex {
+  id        Int      @id
+  region_id Int
+  name_ja   String
+  name_en   String
+  region    Region   @relation(fields: [region_id], references: [id])
+  entries   PokedexEntry[]
+}
+
+model PokedexEntry {
+  id           Int      @id @default(autoincrement())
+  pokemon_id   Int
+  pokedex_id   Int
+  entry_number Int
+  pokemon      Pokemon  @relation(fields: [pokemon_id], references: [id])
+  pokedex      Pokedex  @relation(fields: [pokedex_id], references: [id])
+}
+
+model Type {
+  id      Int      @id
+  name_ja String
+  name_en String
+  typeEntries TypeEntry[]
+}
+
+model TypeEntry {
+  pokemon_id   Int
+  type_id      Int
+  entry_number Int
+  pokemon      Pokemon @relation(fields: [pokemon_id], references: [id])
+  type         Type    @relation(fields: [type_id], references: [id])
+
+  @@id([pokemon_id, type_id])
+}
