@@ -19,8 +19,8 @@ model Pokemon {
   name_ja    String
   name_kana  String
   name_en    String
-  height     Float?
-  weight     Float?
+  height     Float
+  weight     Float
   pokedexEntries PokedexEntry[]
   typeEntries    TypeEntry[]
 }
@@ -29,6 +29,7 @@ model Region {
   id      Int      @id
   name_ja String
   name_en String
+  slug    String   @unique
   pokedexes Pokedex[]
 }
 
@@ -37,23 +38,26 @@ model Pokedex {
   region_id Int
   name_ja   String
   name_en   String
+  slug      String   @unique
   region    Region   @relation(fields: [region_id], references: [id])
   entries   PokedexEntry[]
 }
 
 model PokedexEntry {
-  id           Int      @id @default(autoincrement())
   pokemon_id   Int
   pokedex_id   Int
   entry_number Int
-  pokemon      Pokemon  @relation(fields: [pokemon_id], references: [id])
-  pokedex      Pokedex  @relation(fields: [pokedex_id], references: [id])
+  pokemon      Pokemon  @relation(fields: [pokemon_id], references: [id], onDelete: Cascade)
+  pokedex      Pokedex  @relation(fields: [pokedex_id], references: [id], onDelete: Cascade)
+
+  @@id([pokemon_id, pokedex_id])
 }
 
 model Type {
   id      Int      @id
   name_ja String
   name_en String
+  slug    String   @unique
   typeEntries TypeEntry[]
 }
 
@@ -61,8 +65,8 @@ model TypeEntry {
   pokemon_id   Int
   type_id      Int
   entry_number Int
-  pokemon      Pokemon @relation(fields: [pokemon_id], references: [id])
-  type         Type    @relation(fields: [type_id], references: [id])
+  pokemon      Pokemon @relation(fields: [pokemon_id], references: [id], onDelete: Cascade)
+  type         Type    @relation(fields: [type_id], references: [id], onDelete: Cascade)
 
   @@id([pokemon_id, type_id])
 }

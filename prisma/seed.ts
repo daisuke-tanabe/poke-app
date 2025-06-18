@@ -9,77 +9,122 @@ async function main() {
   await prisma.type.deleteMany();
   await prisma.pokedex.deleteMany();
   await prisma.region.deleteMany();
+  console.log('全データ削除完了');
 
-  // 地方
+  // regions投入
   await prisma.region.createMany({
     data: [
-      { id: 1, name_ja: '全国', name_en: 'Global' },
-      { id: 10, name_ja: 'カントー', name_en: 'Kanto' },
+      { id: 1, name_ja: '全国', name_en: 'Global', slug: 'global' },
+      { id: 10, name_ja: 'カントー', name_en: 'Kanto', slug: 'kanto' },
+      { id: 20, name_ja: 'ジョウト', name_en: 'Johto', slug: 'johto' },
+      { id: 30, name_ja: 'ホウエン', name_en: 'Hoeen', slug: 'hoeen' },
+      { id: 40, name_ja: 'シンオウ', name_en: 'Sinnoh', slug: 'sinnoh' },
+      { id: 50, name_ja: 'イッシュ', name_en: 'Unova', slug: 'unova' },
+      { id: 60, name_ja: 'カロス', name_en: 'Kalos', slug: 'kalos' },
+      { id: 70, name_ja: 'アローラ', name_en: 'Alola', slug: 'alola' },
+      { id: 80, name_ja: 'ヒスイ', name_en: 'Hisui', slug: 'hisui' },
+      { id: 90, name_ja: 'ガラル', name_en: 'Galar', slug: 'galar' },
+      { id: 100, name_ja: 'パルデア', name_en: 'Paldea', slug: 'paldea' },
     ],
   });
-  // 図鑑
-  await prisma.pokedex.createMany({
-    data: [
-      { id: 1, region_id: 1, name_ja: '全国', name_en: 'National' },
-      { id: 10, region_id: 10, name_ja: 'カントー', name_en: 'Kanto' },
-    ],
-  });
-  // タイプ
+  console.log('regions投入完了');
+
+  // pokedexes投入
+  const pokedexes = [
+    { id: 1, region_id: 1, name_ja: '全国', name_en: 'National', slug: 'national' },
+    { id: 10, region_id: 10, name_ja: 'カントー', name_en: 'Kanto', slug: 'kanto' },
+    { id: 20, region_id: 20, name_ja: 'ジョウト', name_en: 'Johto', slug: 'johto' },
+    { id: 30, region_id: 30, name_ja: 'ホウエン', name_en: 'Hoeen', slug: 'hoeen' },
+    { id: 40, region_id: 40, name_ja: 'シンオウ', name_en: 'Sinnoh', slug: 'sinnoh' },
+    { id: 50, region_id: 50, name_ja: 'イッシュ', name_en: 'Unova', slug: 'unova' },
+    { id: 60, region_id: 60, name_ja: 'カロス', name_en: 'Kalos', slug: 'kalos' },
+    { id: 70, region_id: 70, name_ja: 'アローラ', name_en: 'Alola', slug: 'alola' },
+    { id: 71, region_id: 70, name_ja: 'メレメレ', name_en: 'Melemele', slug: 'melemele' },
+    { id: 72, region_id: 70, name_ja: 'アーカラ', name_en: 'Akala', slug: 'akala' },
+    { id: 73, region_id: 70, name_ja: 'ウラウラ', name_en: "Ula'ula", slug: 'ulaula' },
+    { id: 74, region_id: 70, name_ja: 'ポニ', name_en: 'Poni', slug: 'poni' },
+    { id: 80, region_id: 80, name_ja: 'ヒスイ', name_en: 'Hisui', slug: 'hisui' },
+    { id: 90, region_id: 90, name_ja: 'ガラル', name_en: 'Galar', slug: 'galar' },
+    { id: 91, region_id: 90, name_ja: 'ヨロイじま', name_en: 'Isle of Armor', slug: 'isle-of-armor' },
+    { id: 92, region_id: 90, name_ja: 'カンムリせつげん', name_en: 'Crown Tundra', slug: 'crown-tundra' },
+    { id: 100, region_id: 100, name_ja: 'パルデア', name_en: 'Paldea', slug: 'paldea' },
+    { id: 101, region_id: 100, name_ja: 'キタカミ', name_en: 'Kitakami', slug: 'kitakami' },
+    { id: 102, region_id: 100, name_ja: 'ブルーベリー', name_en: 'Blueberry', slug: 'blueberry' },
+  ];
+  await prisma.pokedex.createMany({ data: pokedexes });
+  console.log('pokedexes投入完了');
+
+  // types投入
   await prisma.type.createMany({
     data: [
-      { id: 10, name_ja: 'ノーマル', name_en: 'Normal' },
-      { id: 20, name_ja: 'ほのお', name_en: 'Fire' },
-      { id: 30, name_ja: 'みず', name_en: 'Water' },
-      { id: 50, name_ja: 'くさ', name_en: 'Grass' },
-      { id: 120, name_ja: 'むし', name_en: 'Bug' },
+      { id: 10, name_ja: 'ノーマル', name_en: 'Normal', slug: 'normal' },
+      { id: 20, name_ja: 'ほのお', name_en: 'Fire', slug: 'fire' },
+      { id: 30, name_ja: 'みず', name_en: 'Water', slug: 'water' },
+      { id: 40, name_ja: 'でんき', name_en: 'Electric', slug: 'electric' },
+      { id: 50, name_ja: 'くさ', name_en: 'Grass', slug: 'grass' },
+      { id: 60, name_ja: 'こおり', name_en: 'Ice', slug: 'ice' },
+      { id: 70, name_ja: 'かくとう', name_en: 'Fighting', slug: 'fighting' },
+      { id: 80, name_ja: 'どく', name_en: 'Poison', slug: 'poison' },
+      { id: 90, name_ja: 'じめん', name_en: 'Ground', slug: 'ground' },
+      { id: 100, name_ja: 'ひこう', name_en: 'Flying', slug: 'flying' },
+      { id: 110, name_ja: 'エスパー', name_en: 'Psychic', slug: 'psychic' },
+      { id: 120, name_ja: 'むし', name_en: 'Bug', slug: 'bug' },
+      { id: 130, name_ja: 'いわ', name_en: 'Rock', slug: 'rock' },
+      { id: 140, name_ja: 'ゴースト', name_en: 'Ghost', slug: 'ghost' },
+      { id: 150, name_ja: 'ドラゴン', name_en: 'Dragon', slug: 'dragon' },
+      { id: 160, name_ja: 'あく', name_en: 'Dark', slug: 'dark' },
+      { id: 170, name_ja: 'はがね', name_en: 'Steel', slug: 'steel' },
+      { id: 180, name_ja: 'フェアリー', name_en: 'Fairy', slug: 'fairy' },
     ],
   });
-  // ポケモン10匹
-  await prisma.pokemon.createMany({
-    data: [
-      { id: 1, name_ja: 'フシギダネ', name_kana: 'Fushigidane', name_en: 'Bulbasaur', height: 0.7, weight: 6.9 },
-      { id: 2, name_ja: 'フシギソウ', name_kana: 'Fushigisou', name_en: 'Ivysaur', height: 1.0, weight: 13.0 },
-      { id: 3, name_ja: 'フシギバナ', name_kana: 'Fushigibana', name_en: 'Venusaur', height: 2.0, weight: 100.0 },
-      { id: 4, name_ja: 'ヒトカゲ', name_kana: 'Hitokage', name_en: 'Charmander', height: 0.6, weight: 8.5 },
-      { id: 5, name_ja: 'リザード', name_kana: 'Lizardo', name_en: 'Charmeleon', height: 1.1, weight: 19.0 },
-      { id: 6, name_ja: 'リザードン', name_kana: 'Lizardon', name_en: 'Charizard', height: 1.7, weight: 90.5 },
-      { id: 7, name_ja: 'ゼニガメ', name_kana: 'Zenigame', name_en: 'Squirtle', height: 0.5, weight: 9.0 },
-      { id: 8, name_ja: 'カメール', name_kana: 'Kameil', name_en: 'Wartortle', height: 1.0, weight: 22.5 },
-      { id: 9, name_ja: 'カメックス', name_kana: 'Kamex', name_en: 'Blastoise', height: 1.6, weight: 85.5 },
-      { id: 10, name_ja: 'キャタピー', name_kana: 'Caterpie', name_en: 'Caterpie', height: 0.3, weight: 2.9 },
-    ],
+  console.log('types投入完了');
+
+  // ポケモン個体を一意に生成（例：100匹）
+  const pokemonCount = 100;
+  const allPokemons = Array.from({ length: pokemonCount }).map((_, i) => ({
+    id: i + 1,
+    name_ja: `ポケモン${i + 1}`,
+    name_kana: `Pokemon${i + 1}`,
+    name_en: `Pokemon${i + 1}`,
+    height: 1.0 + ((i + 1) % 5) * 0.1,
+    weight: 10.0 + ((i + 1) % 5) * 2,
+  }));
+  await prisma.pokemon.createMany({ data: allPokemons });
+  console.log(`pokemon投入完了: ${allPokemons.length}件`);
+
+  // 各ポケモンに全国図鑑＋1つ以上の地方図鑑をランダムで割り当て
+  const localPokedexIds = pokedexes.filter(p => p.id !== 1).map(p => p.id);
+  const allPokedexEntries = allPokemons.flatMap((p, i) => {
+    // 1〜3個の地方図鑑にランダムで所属
+    const shuffled = [...localPokedexIds].sort(() => 0.5 - Math.random());
+    const belongCount = Math.floor(Math.random() * 3) + 1; // 1〜3
+    const belongLocal = shuffled.slice(0, belongCount);
+    // 全国図鑑＋地方図鑑
+    return [
+      { pokemon_id: p.id, pokedex_id: 1, entry_number: i + 1 },
+      ...belongLocal.map((pid, idx) => ({
+        pokemon_id: p.id,
+        pokedex_id: pid,
+        entry_number: idx + 1,
+      })),
+    ];
   });
-  // 図鑑エントリ
-  await prisma.pokedexEntry.createMany({
-    data: [
-      { pokemon_id: 1, pokedex_id: 1, entry_number: 1 },
-      { pokemon_id: 2, pokedex_id: 1, entry_number: 2 },
-      { pokemon_id: 3, pokedex_id: 1, entry_number: 3 },
-      { pokemon_id: 4, pokedex_id: 1, entry_number: 4 },
-      { pokemon_id: 5, pokedex_id: 1, entry_number: 5 },
-      { pokemon_id: 6, pokedex_id: 1, entry_number: 6 },
-      { pokemon_id: 7, pokedex_id: 1, entry_number: 7 },
-      { pokemon_id: 8, pokedex_id: 1, entry_number: 8 },
-      { pokemon_id: 9, pokedex_id: 1, entry_number: 9 },
-      { pokemon_id: 10, pokedex_id: 1, entry_number: 10 },
-    ],
+  await prisma.pokedexEntry.createMany({ data: allPokedexEntries });
+  console.log(`pokedexEntry投入完了: ${allPokedexEntries.length}件`);
+
+  // タイプエントリ（全ポケモンにランダムで1つか2つタイプを付与）
+  const typeIds = [10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180];
+  const allTypeEntries = allPokemons.flatMap((p) => {
+    const shuffled = [...typeIds].sort(() => 0.5 - Math.random());
+    const typeCount = Math.random() < 0.5 ? 1 : 2;
+    return Array.from({ length: typeCount }).map((_, t) => ({
+      pokemon_id: p.id,
+      type_id: shuffled[t],
+      entry_number: t + 1,
+    }));
   });
-  // タイプエントリ
-  await prisma.typeEntry.createMany({
-    data: [
-      { pokemon_id: 1, type_id: 50, entry_number: 1 }, // くさ
-      { pokemon_id: 1, type_id: 10, entry_number: 2 }, // ノーマル
-      { pokemon_id: 2, type_id: 50, entry_number: 1 },
-      { pokemon_id: 3, type_id: 50, entry_number: 1 },
-      { pokemon_id: 4, type_id: 20, entry_number: 1 }, // ほのお
-      { pokemon_id: 5, type_id: 20, entry_number: 1 },
-      { pokemon_id: 6, type_id: 20, entry_number: 1 },
-      { pokemon_id: 7, type_id: 30, entry_number: 1 }, // みず
-      { pokemon_id: 8, type_id: 30, entry_number: 1 },
-      { pokemon_id: 9, type_id: 30, entry_number: 1 },
-      { pokemon_id: 10, type_id: 120, entry_number: 1 }, // むし
-    ],
-  });
+  await prisma.typeEntry.createMany({ data: allTypeEntries });
+  console.log(`typeEntry投入完了: ${allTypeEntries.length}件`);
 }
 
 main()
