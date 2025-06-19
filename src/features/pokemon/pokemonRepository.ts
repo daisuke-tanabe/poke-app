@@ -17,38 +17,9 @@ export const pokemonRepository = {
     return prisma.pokemon.findMany({
       include: {
         pokedexEntries: {
-          where: { pokedex_id: pokedexId },
+          // where句を削除し、全ての図鑑エントリを取得
+          include: { pokedex: true },
         },
-        typeEntries: true,
-      },
-    });
-  },
-
-  // 名前で検索
-  async findByName(name: string): Promise<Pokemon | null> {
-    return prisma.pokemon.findFirst({
-      where: {
-        OR: [{ name_ja: { contains: name } }, { name_kana: { contains: name } }, { name_en: { contains: name } }],
-      },
-      include: {
-        pokedexEntries: true,
-        typeEntries: true,
-      },
-    });
-  },
-
-  // タイプで検索（複数タイプ対応）
-  async findByTypes(typeIds: number[]): Promise<Pokemon[]> {
-    return prisma.pokemon.findMany({
-      where: {
-        typeEntries: {
-          some: {
-            type_id: { in: typeIds },
-          },
-        },
-      },
-      include: {
-        pokedexEntries: true,
         typeEntries: true,
       },
     });
@@ -89,7 +60,8 @@ export const pokemonRepository = {
       },
       include: {
         pokedexEntries: {
-          where: { pokedex_id: pokedexId },
+          // where句を削除し、全ての図鑑エントリを取得
+          include: { pokedex: true },
         },
         typeEntries: true,
       },
@@ -133,7 +105,8 @@ export const pokemonRepository = {
       },
       include: {
         pokedexEntries: {
-          where: { pokedex_id: pokedexId },
+          // where句を削除し、全ての図鑑エントリを取得
+          include: { pokedex: true },
         },
         typeEntries: true,
       },
@@ -203,7 +176,7 @@ export const pokemonRepository = {
         ],
       },
       include: {
-        pokedexEntries: { where: { pokedex_id: pokedexId } },
+        pokedexEntries: { include: { pokedex: true } },
         typeEntries: true,
       },
       skip: offset,
