@@ -146,7 +146,9 @@ export const pokemonRepository = {
     if (!pokedexId) return [];
     // タイプ条件ロジック
     let typeCondition = {};
-    if (type1 && type2 && type1 !== type2) {
+    const isType1Valid = type1 && type1 !== "all";
+    const isType2Valid = type2 && type2 !== "all";
+    if (isType1Valid && isType2Valid && type1 !== type2) {
       // 両方指定・異なる場合: 両方のタイプを持つ
       typeCondition = {
         AND: [
@@ -154,9 +156,9 @@ export const pokemonRepository = {
           { typeEntries: { some: { type_id: Number(type2) } } },
         ],
       };
-    } else if (type1 || type2) {
+    } else if (isType1Valid || isType2Valid) {
       // どちらかのみ指定 or 同じ場合: そのタイプを持つ
-      const t = Number(type1 || type2);
+      const t = Number(isType1Valid ? type1 : type2);
       typeCondition = { typeEntries: { some: { type_id: t } } };
     }
     return prisma.pokemon.findMany({
@@ -193,16 +195,19 @@ export const pokemonRepository = {
   ): Promise<number> {
     const pokedexId = await getPokedexIdBySlug(pokedexSlug);
     if (!pokedexId) return 0;
+    // タイプ条件ロジック（findByPokedexAndNameAndTypesと統一）
     let typeCondition = {};
-    if (type1 && type2 && type1 !== type2) {
+    const isType1Valid = type1 && type1 !== "all";
+    const isType2Valid = type2 && type2 !== "all";
+    if (isType1Valid && isType2Valid && type1 !== type2) {
       typeCondition = {
         AND: [
           { typeEntries: { some: { type_id: Number(type1) } } },
           { typeEntries: { some: { type_id: Number(type2) } } },
         ],
       };
-    } else if (type1 || type2) {
-      const t = Number(type1 || type2);
+    } else if (isType1Valid || isType2Valid) {
+      const t = Number(isType1Valid ? type1 : type2);
       typeCondition = { typeEntries: { some: { type_id: t } } };
     }
     return prisma.pokemon.count({

@@ -1,4 +1,5 @@
-import React from 'react';
+import * as React from "react";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from "@/components/ui/select";
 
 export type PokedexGroup = {
   regionId: number;
@@ -16,21 +17,23 @@ export const PokedexSelect: React.FC<PokedexSelectProps> = ({ value, onChange, o
   return (
     <div>
       <label className="block mb-1 font-bold">図鑑を選択</label>
-      <select
-        className="border rounded px-2 py-1"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        {options.map((group) => (
-          <optgroup key={group.regionId} label={group.regionNameJa}>
-            {group.pokedexes.map((item) => (
-              <option key={item.slug} value={item.slug}>
-                {item.nameJa}
-              </option>
-            ))}
-          </optgroup>
-        ))}
-      </select>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="図鑑を選択" />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((group) => (
+            <SelectGroup key={group.regionId}>
+              <SelectLabel>{group.regionNameJa}</SelectLabel>
+              {group.pokedexes.map((item) => (
+                <SelectItem key={item.slug} value={item.slug}>
+                  {item.nameJa}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 };
