@@ -110,4 +110,149 @@ export const pokemonRepository = {
       },
     });
   },
+
+  // 図鑑＋名前でAND検索
+  async findByPokedexAndName(
+    pokedexSlug: string,
+    name: string,
+    limit = 20,
+    offset = 0
+  ): Promise<(Pokemon & { pokedexEntries: PokedexEntry[]; typeEntries: TypeEntry[] })[]> {
+    const pokedexId = await getPokedexIdBySlug(pokedexSlug);
+    if (!pokedexId) return [];
+    return prisma.pokemon.findMany({
+      where: {
+        pokedexEntries: {
+          some: { pokedex_id: pokedexId },
+        },
+        OR: [
+          { name_ja: { contains: name } },
+          { name_kana: { contains: name } },
+          { name_en: { contains: name } },
+        ],
+      },
+      include: {
+        pokedexEntries: {
+          where: { pokedex_id: pokedexId },
+        },
+        typeEntries: true,
+      },
+      skip: offset,
+      take: limit,
+    });
+  },
+
+  // 図鑑＋名前でAND検索の件数取得
+  async countByPokedexAndName(pokedexSlug: string, name: string): Promise<number> {
+    const pokedexId = await getPokedexIdBySlug(pokedexSlug);
+    if (!pokedexId) return 0;
+    return prisma.pokemon.count({
+      where: {
+        pokedexEntries: {
+          some: { pokedex_id: pokedexId },
+        },
+        OR: [
+          { name_ja: { contains: name } },
+          { name_kana: { contains: name } },
+          { name_en: { contains: name } },
+        ],
+      },
+    });
+  },
+
+  // 図鑑＋名前＋タイプ1＋タイプ2でAND検索
+  async findByPokedexAndNameAndTypes(
+    pokedexSlug: string,
+    name: string,
+    type1: string,
+    type2: string,
+    limit = 20,
+    offset = 0
+  ): Promise<(Pokemon & { pokedexEntries: PokedexEntry[]; typeEntries: TypeEntry[] })[]> {
+    const pokedexId = await getPokedexIdBySlug(pokedexSlug);
+    if (!pokedexId) return [];
+    // タイプ条件ロジック
+    let typeCondition = {};
+    if (type1 && type2 && type1 !== type2) {
+      // 両方指定・異なる場合: 両方のタイプを持つ
+      typeCondition = {
+        AND: [
+          { typeEntries: { some: { type_id: Number(type1) } } },
+          { typeEntries: { some: { type_id: Number(type2) } } },
+        ],
+      };
+    } else if (type1 || type2) {
+      // どちらかのみ指定 or 同じ場合: そのタイプを持つ
+      const t = Number(type1 || type2);
+      typeCondition = { typeEntries: { some: { type_id: t } } };
+    }
+    return prisma.pokemon.findMany({
+      where: {
+        pokedexEntries: { some: { pokedex_id: pokedexId } },
+        AND: [
+          name
+            ? {
+                OR: [
+                  { name_ja: { contains: name } },
+                  { name_kana: { contains: name } },
+                  { name_en: { contains: name } },
+                ],
+              }
+            : {},
+          typeCondition,
+        ],
+      },
+      include: {
+        pokedexEntries: { where: { pokedex_id: pokedexId } },
+        typeEntries: true,
+      },
+      skip: offset,
+      take: limit,
+    });
+  },
+
+  // 図鑑＋名前＋タイプ1＋タイプ2でAND検索の件数取得
+  async countByPokedexAndNameAndTypes(
+    pokedexSlug: string,
+    name: string,
+    type1: string,
+    type2: string
+  ): Promise<number> {
+    const pokedexId = await getPokedexIdBySlug(pokedexSlug);
+    if (!pokedexId) return 0;
+    let typeCondition = {};
+    if (type1 && type2 && type1 !== type2) {
+      typeCondition = {
+        AND: [
+          { typeEntries: { some: { type_id: Number(type1) } } },
+          { typeEntries: { some: { type_id: Number(type2) } } },
+        ],
+      };
+    } else if (type1 || type2) {
+      const t = Number(type1 || type2);
+      typeCondition = { typeEntries: { some: { type_id: t } } };
+    }
+    return prisma.pokemon.count({
+      where: {
+        pokedexEntries: { some: { pokedex_id: pokedexId } },
+        AND: [
+          name
+            ? {
+                OR: [
+                  { name_ja: { contains: name } },
+                  { name_kana: { contains: name } },
+                  { name_en: { contains: name } },
+                ],
+              }
+            : {},
+          typeCondition,
+        ],
+      },
+    });
+  },
+
+  // 全タイプ一覧を取得
+  async getAllTypes() {
+    return prisma.type.findMany({ orderBy: { id: 'asc' } });
+  },
 };
