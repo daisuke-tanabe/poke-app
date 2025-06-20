@@ -3,10 +3,12 @@ import Image from 'next/image';
 import { Pokemon, TypeEntry, Type } from '@prisma/client';
 import type { PokedexEntryWithPokedex } from '../_containers/HomeContainer';
 import { useState } from 'react';
+import { findOrThrow } from '@/lib/utils';
 
 export type PokemonCardProps = {
   pokemon: Pokemon & { pokedexEntries: PokedexEntryWithPokedex[]; typeEntries: TypeEntry[] };
   typeOptions: Type[];
+  searchPokedexSlug: string; // 追加: 検索対象図鑑slug
 };
 
 function ImageWithFallback({ nationalNo, pokedexId, alt }: { nationalNo: number; pokedexId: number; alt: string }) {
@@ -19,8 +21,14 @@ function ImageWithFallback({ nationalNo, pokedexId, alt }: { nationalNo: number;
   );
 }
 
-export function PokemonCard({ pokemon, typeOptions }: PokemonCardProps) {
-  const nationalEntry = pokemon.pokedexEntries.find((e) => e.pokedex_id === 1)!;
+export function PokemonCard({ pokemon, typeOptions, searchPokedexSlug }: PokemonCardProps) {
+  // 検索対象図鑑のエントリを取得（必ず存在する前提）
+  const pokedexEntry = findOrThrow(
+    pokemon.pokedexEntries,
+    (e) => e.pokedex?.slug === searchPokedexSlug,
+    'pokedexEntry not found for this pokemon and searchPokedexSlug'
+  );
+  const displayNumber = `#${pokedexEntry.entry_number}`;
   const types = pokemon.typeEntries
     .map((te) => {
       const type = typeOptions.find((t) => t.id === te.type_id);
@@ -39,9 +47,7 @@ export function PokemonCard({ pokemon, typeOptions }: PokemonCardProps) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">{pokemon.name_ja}</CardTitle>
-          <span className="text-sm text-muted-foreground">
-            #{nationalEntry.entry_number.toString().padStart(3, '0')}
-          </span>
+          <span className="text-sm text-muted-foreground">{displayNumber}</span>
         </div>
         <CardDescription className="text-xs">{pokemon.name_en}</CardDescription>
       </CardHeader>
@@ -49,8 +55,8 @@ export function PokemonCard({ pokemon, typeOptions }: PokemonCardProps) {
         <div className="flex justify-center mb-6">
           <div className="w-24 h-24 flex items-center justify-center">
             <ImageWithFallback
-              nationalNo={nationalEntry.entry_number}
-              pokedexId={nationalEntry.pokedex_id}
+              nationalNo={pokedexEntry.entry_number}
+              pokedexId={pokedexEntry.pokedex_id}
               alt={pokemon.name_ja}
             />
           </div>

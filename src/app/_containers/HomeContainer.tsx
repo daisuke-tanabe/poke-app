@@ -31,6 +31,9 @@ function AntiCorruptionPokemonSearchClient({
   pokemons,
   total,
 }: PokemonSearchClientProps) {
+  console.dir(pokemons, { depth: null });
+
+
   const router = useRouter();
   const initialSlug = typeof searchParams.pokedex === 'string' ? searchParams.pokedex : 'national';
   const initialType1 = typeof searchParams.type1 === 'string' ? searchParams.type1 : 'all';
@@ -89,7 +92,7 @@ function AntiCorruptionPokemonSearchClient({
           <>
             <div className="grid gap-4 mb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {pokemons.map((p) => (
-                <PokemonCard key={p.id} pokemon={p} typeOptions={typeOptions} />
+                <PokemonCard key={p.id} pokemon={p} typeOptions={typeOptions} searchPokedexSlug={initialSlug} />
               ))}
             </div>
             <Pagination
