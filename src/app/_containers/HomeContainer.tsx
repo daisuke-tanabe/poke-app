@@ -24,16 +24,13 @@ const PAGE_SIZE = 20;
 // pokedexId→pokedex情報の逆引きマップを作成
 const pokedexIdMap: Record<number, { slug: string; nameJa: string }> = {};
 
-function AntiCorruptionPokemonSearchClient({
+function HomeContainer({
   pokedexOptions,
   typeOptions,
   searchParams = {},
   pokemons,
   total,
 }: PokemonSearchClientProps) {
-  console.dir(pokemons, { depth: null });
-
-
   const router = useRouter();
   const initialSlug = typeof searchParams.pokedex === 'string' ? searchParams.pokedex : 'national';
   const initialType1 = typeof searchParams.type1 === 'string' ? searchParams.type1 : 'all';
@@ -112,4 +109,4 @@ function AntiCorruptionPokemonSearchClient({
   );
 }
 
-export default AntiCorruptionPokemonSearchClient;
+export default HomeContainer;

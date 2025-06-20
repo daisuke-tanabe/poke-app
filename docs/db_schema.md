@@ -101,7 +101,7 @@
 | ------------ | ------------------ | --------------------------------------------------- |
 | pokemon_id   | integer [NOT NULL] | pokemonsテーブルのidを参照、外部キー（複合主キー）  |
 | pokedex_id   | integer [NOT NULL] | pokedexesテーブルのidを参照、外部キー（複合主キー） |
-| entry_number | integer [NOT NULL] | 図鑑内での番号、ユニーク制約                               |
+| entry_number | integer [NOT NULL] | 図鑑内での番号、ユニーク制約                        |
 
 ---
 
@@ -148,7 +148,7 @@
 ポケモンとタイプの関係、そしてタイプの順序を格納する中間テーブルです。
 主キーは pokemon_id と type_id をまとめた複合キーです。
 
-| カラム       | 型                 | 説明                                               |
-| ------------ | ------------------ | -------------------------------------------------- |
-| pokemon_id   | integer [NOT NULL] | pokemonsテーブルのidを参照、外部キー（複合主キー） |
-| type_id      | integer [NOT NULL] | typesテーブルのidを参照、外部キー（複合主キー）    |
+| カラム     | 型                 | 説明                                               |
+| ---------- | ------------------ | -------------------------------------------------- |
+| pokemon_id | integer [NOT NULL] | pokemonsテーブルのidを参照、外部キー（複合主キー） |
+| type_id    | integer [NOT NULL] | typesテーブルのidを参照、外部キー（複合主キー）    |
