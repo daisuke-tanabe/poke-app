@@ -42,9 +42,8 @@ export function PokemonFilterDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="bg-white text-black border-gray-300">
-          <Search className="h-4 w-4 mr-2" />
-          フィルター
+        <Button variant="ghost" size="icon" className="rounded-full">
+          <Search className="w-5 h-5" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md">

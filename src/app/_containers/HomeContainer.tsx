@@ -6,6 +6,7 @@ import { PokemonFilterDialog } from "../_components/PokemonFilterDialog";
 import { PokemonCard } from "../_components/PokemonCard";
 import { Pagination } from "../_components/Pagination";
 import type { PokedexGroup } from "../_components/PokedexSelect";
+import { ThemeToggleButton } from "../_components/ThemeToggleButton";
 
 export type PokemonSearchClientProps = {
   pokedexOptions: PokedexGroup[];
@@ -59,17 +60,20 @@ function AntiCorruptionPokemonSearchClient({ pokedexOptions, typeOptions, search
     <div className="container mx-auto p-6 max-w-6xl">
       <header className="sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 max-w-6xl">
-          <h1 className="text-3xl font-bold text-gray-800">Pokédex</h1>
-          <div className="flex items-center justify-between mb-8">
-            <PokemonFilterDialog
-              pokedexOptions={pokedexOptions}
-              typeOptions={typeOptions}
-              initialSlug={selectedSlug}
-              initialType1={selectedType1}
-              initialType2={selectedType2}
-              initialName={searchName}
-              onApply={handleFilterApply}
-            />
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl">Pokédex</h1>
+            <div className="flex items-center justify-between">
+              <PokemonFilterDialog
+                pokedexOptions={pokedexOptions}
+                typeOptions={typeOptions}
+                initialSlug={selectedSlug}
+                initialType1={selectedType1}
+                initialType2={selectedType2}
+                initialName={searchName}
+                onApply={handleFilterApply}
+              />
+              <ThemeToggleButton />
+            </div>
           </div>
         </div>
       </header>
