@@ -56,41 +56,43 @@ function AntiCorruptionPokemonSearchClient({ pokedexOptions, typeOptions, search
   });
 
   return (
-    <main>
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">ポケモン図鑑検索</h1>
-          <p className="text-muted-foreground">図鑑を選択してポケモンを検索できます</p>
-        </div>
-
-        <PokemonFilterDialog
-          pokedexOptions={pokedexOptions}
-          typeOptions={typeOptions}
-          initialSlug={selectedSlug}
-          initialType1={selectedType1}
-          initialType2={selectedType2}
-          initialName={searchName}
-          onApply={handleFilterApply}
-        />
-      </div>
-      
-      {initialSlug && (
-        <>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {pokemons.map((p) => (
-              <PokemonCard key={p.id} pokemon={p} typeOptions={typeOptions} />
-            ))}
+    <div className="container mx-auto p-6 max-w-6xl">
+      <header className="sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4 max-w-6xl">
+          <h1 className="text-3xl font-bold text-gray-800">Pokédex</h1>
+          <div className="flex items-center justify-between mb-8">
+            <PokemonFilterDialog
+              pokedexOptions={pokedexOptions}
+              typeOptions={typeOptions}
+              initialSlug={selectedSlug}
+              initialType1={selectedType1}
+              initialType2={selectedType2}
+              initialName={searchName}
+              onApply={handleFilterApply}
+            />
           </div>
-          <Pagination
-            total={total}
-            page={page}
-            pageSize={PAGE_SIZE}
-            onPageChange={(p) => router.push(`?pokedex=${initialSlug}&page=${p}&name=${encodeURIComponent(initialName)}&type1=${initialType1}&type2=${initialType2}`)}
-            className="mt-6"
-          />
-        </>
-      )}
-    </main>
+        </div>
+      </header>
+
+      <main className="container mx-auto p-6 max-w-6xl">
+        {initialSlug && (
+          <>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {pokemons.map((p) => (
+                <PokemonCard key={p.id} pokemon={p} typeOptions={typeOptions} />
+              ))}
+            </div>
+            <Pagination
+              total={total}
+              page={page}
+              pageSize={PAGE_SIZE}
+              onPageChange={(p) => router.push(`?pokedex=${initialSlug}&page=${p}&name=${encodeURIComponent(initialName)}&type1=${initialType1}&type2=${initialType2}`)}
+              className="mt-6"
+            />
+          </>
+        )}
+      </main>
+    </div>
   );
 }
 

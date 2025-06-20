@@ -14,10 +14,8 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="antialiased">
-        <div className="min-h-screen bg-gray-50">
-          <div className="container mx-auto p-6 max-w-6xl">
-            {children}
-          </div>
+        <div className="min-h-screen">
+          {children}
         </div>
       </body>
     </html>
