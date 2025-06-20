@@ -87,7 +87,7 @@ function AntiCorruptionPokemonSearchClient({
       <main className="container mx-auto p-6 max-w-6xl">
         {initialSlug && (
           <>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-4 mb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {pokemons.map((p) => (
                 <PokemonCard key={p.id} pokemon={p} typeOptions={typeOptions} />
               ))}
@@ -101,7 +101,6 @@ function AntiCorruptionPokemonSearchClient({
                   `?pokedex=${initialSlug}&page=${p}&name=${encodeURIComponent(initialName)}&type1=${initialType1}&type2=${initialType2}`,
                 )
               }
-              className="mt-6"
             />
           </>
         )}

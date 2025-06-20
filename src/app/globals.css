@@ -116,6 +116,9 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    /* background: linear-gradient(135deg, #E9E9E9 0%, #E5E5E5 100%); */
+    @apply text-foreground;
+    @apply bg-gradient-to-br from-neutral-200 via-neutral-300 to-neutral-300;
+    @apply dark:bg-gradient-to-br dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900;
   }
 }

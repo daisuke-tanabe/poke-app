@@ -6,14 +6,13 @@ export type PaginationProps = {
   page: number;
   pageSize: number;
   onPageChange: (page: number) => void;
-  className?: string;
 };
 
-export function Pagination({ total, page, pageSize, onPageChange, className = '' }: PaginationProps) {
+export function Pagination({ total, page, pageSize, onPageChange }: PaginationProps) {
   const pageCount = Math.ceil(total / pageSize);
   if (pageCount <= 1) return null;
   return (
-    <div className={`flex flex-wrap gap-2 justify-center ${className}`}>
+    <div className="flex flex-wrap gap-2 justify-center">
       {Array.from({ length: pageCount }, (_, i) => (
         <Button
           key={i + 1}

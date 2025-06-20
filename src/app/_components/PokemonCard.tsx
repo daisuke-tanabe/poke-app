@@ -13,9 +13,9 @@ function ImageWithFallback({ nationalNo, pokedexId, alt }: { nationalNo: number;
   const [error, setError] = useState(false);
   const src = `/pokemons/${nationalNo}-${pokedexId}.png`;
   return error ? (
-    <Image src={`/placeholder.svg?height=80&width=80`} alt={alt} width={80} height={80} className="rounded-full" />
+    <Image src="/pokemons/placeholder.png" alt={alt} width={32} height={32} />
   ) : (
-    <Image src={src} alt={alt} width={80} height={80} className="rounded-full" onError={() => setError(true)} />
+    <Image src={src} alt={alt} width={80} height={80} onError={() => setError(true)} />
   );
 }
 
@@ -29,7 +29,13 @@ export function PokemonCard({ pokemon, typeOptions }: PokemonCardProps) {
     .filter(Boolean);
 
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card
+      className="bg-white/40 dark:bg-white/5 backdrop-blur-md rounded-xl shadow-none
+      border-t border-t-white/70 dark:border-t-white/15
+      border-l border-l-white/70 dark:border-l-white/15
+      border-r border-r-white/35 dark:border-r-white/7.5
+      border-b border-b-white/35 dark:border-b-white/7.5"
+    >
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">{pokemon.name_ja}</CardTitle>
