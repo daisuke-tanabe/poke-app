@@ -1,13 +1,13 @@
-"use client";
-import { useState } from "react";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/dialog";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/select";
-import { Input } from "@/components/input";
-import { Button } from "@/components/button";
-import { Search } from "lucide-react"
-import { PokedexSelect } from "./PokedexSelect";
-import type { PokedexGroup } from "./PokedexSelect";
-import { Type } from "@prisma/client";
+'use client';
+import { useState } from 'react';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/dialog';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/select';
+import { Input } from '@/components/input';
+import { Button } from '@/components/button';
+import { Search } from 'lucide-react';
+import { PokedexSelect } from './PokedexSelect';
+import type { PokedexGroup } from './PokedexSelect';
+import { Type } from '@prisma/client';
 
 export type PokemonFilterDialogProps = {
   pokedexOptions: PokedexGroup[];
@@ -65,7 +65,9 @@ export function PokemonFilterDialog({
                 <SelectContent>
                   <SelectItem value="all">すべて</SelectItem>
                   {typeOptions.map((t) => (
-                    <SelectItem key={t.id} value={String(t.id)}>{t.name_ja}</SelectItem>
+                    <SelectItem key={t.id} value={String(t.id)}>
+                      {t.name_ja}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -79,7 +81,9 @@ export function PokemonFilterDialog({
                 <SelectContent>
                   <SelectItem value="all">すべて</SelectItem>
                   {typeOptions.map((t) => (
-                    <SelectItem key={t.id} value={String(t.id)}>{t.name_ja}</SelectItem>
+                    <SelectItem key={t.id} value={String(t.id)}>
+                      {t.name_ja}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -90,14 +94,20 @@ export function PokemonFilterDialog({
             <Input
               type="text"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               placeholder="例: ピカチュウ"
               className="w-full"
             />
           </div>
         </div>
         <DialogFooter>
-          <button type="button" onClick={handleApply} className="w-full font-semibold px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">適用</button>
+          <button
+            type="button"
+            onClick={handleApply}
+            className="w-full font-semibold px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+          >
+            適用
+          </button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

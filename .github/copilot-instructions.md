@@ -4,8 +4,10 @@
 DB設計・データアクセスレイヤー・API設計はポケモン図鑑要件に準拠してください。
 
 # コミットメッセージのルール
+
 Conventional Commits（https://www.conventionalcommits.org/ja/v1.0.0/）に従ってください。
 例:
+
 - feat: 新機能の追加
 - fix: バグ修正
 - docs: ドキュメントのみの変更

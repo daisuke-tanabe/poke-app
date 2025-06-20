@@ -26,11 +26,13 @@ export const pokemonRepository = {
   },
 
   // 図鑑カテゴリ・図鑑リスト取得
-  async getPokedexMasterData(): Promise<{
-    regionId: number;
-    regionNameJa: string;
-    pokedexes: { slug: string; nameJa: string }[];
-  }[]> {
+  async getPokedexMasterData(): Promise<
+    {
+      regionId: number;
+      regionNameJa: string;
+      pokedexes: { slug: string; nameJa: string }[];
+    }[]
+  > {
     const regions = await prisma.region.findMany({
       include: {
         pokedexes: true,
@@ -48,7 +50,7 @@ export const pokemonRepository = {
   async findAllByPokedexPaged(
     pokedexSlug: string,
     limit: number,
-    offset: number
+    offset: number,
   ): Promise<(Pokemon & { pokedexEntries: PokedexEntry[]; typeEntries: TypeEntry[] })[]> {
     const pokedexId = await getPokedexIdBySlug(pokedexSlug);
     if (!pokedexId) return [];
@@ -88,7 +90,7 @@ export const pokemonRepository = {
     pokedexSlug: string,
     name: string,
     limit = 20,
-    offset = 0
+    offset = 0,
   ): Promise<(Pokemon & { pokedexEntries: PokedexEntry[]; typeEntries: TypeEntry[] })[]> {
     const pokedexId = await getPokedexIdBySlug(pokedexSlug);
     if (!pokedexId) return [];
@@ -97,11 +99,7 @@ export const pokemonRepository = {
         pokedexEntries: {
           some: { pokedex_id: pokedexId },
         },
-        OR: [
-          { name_ja: { contains: name } },
-          { name_kana: { contains: name } },
-          { name_en: { contains: name } },
-        ],
+        OR: [{ name_ja: { contains: name } }, { name_kana: { contains: name } }, { name_en: { contains: name } }],
       },
       include: {
         pokedexEntries: {
@@ -124,11 +122,7 @@ export const pokemonRepository = {
         pokedexEntries: {
           some: { pokedex_id: pokedexId },
         },
-        OR: [
-          { name_ja: { contains: name } },
-          { name_kana: { contains: name } },
-          { name_en: { contains: name } },
-        ],
+        OR: [{ name_ja: { contains: name } }, { name_kana: { contains: name } }, { name_en: { contains: name } }],
       },
     });
   },
@@ -140,14 +134,14 @@ export const pokemonRepository = {
     type1: string,
     type2: string,
     limit = 20,
-    offset = 0
+    offset = 0,
   ): Promise<(Pokemon & { pokedexEntries: PokedexEntry[]; typeEntries: TypeEntry[] })[]> {
     const pokedexId = await getPokedexIdBySlug(pokedexSlug);
     if (!pokedexId) return [];
     // タイプ条件ロジック
     let typeCondition = {};
-    const isType1Valid = type1 && type1 !== "all";
-    const isType2Valid = type2 && type2 !== "all";
+    const isType1Valid = type1 && type1 !== 'all';
+    const isType2Valid = type2 && type2 !== 'all';
     if (isType1Valid && isType2Valid && type1 !== type2) {
       // 両方指定・異なる場合: 両方のタイプを持つ
       typeCondition = {
@@ -191,14 +185,14 @@ export const pokemonRepository = {
     pokedexSlug: string,
     name: string,
     type1: string,
-    type2: string
+    type2: string,
   ): Promise<number> {
     const pokedexId = await getPokedexIdBySlug(pokedexSlug);
     if (!pokedexId) return 0;
     // タイプ条件ロジック（findByPokedexAndNameAndTypesと統一）
     let typeCondition = {};
-    const isType1Valid = type1 && type1 !== "all";
-    const isType2Valid = type2 && type2 !== "all";
+    const isType1Valid = type1 && type1 !== 'all';
+    const isType2Valid = type2 && type2 !== 'all';
     if (isType1Valid && isType2Valid && type1 !== type2) {
       typeCondition = {
         AND: [
@@ -247,19 +241,15 @@ export const pokemonRepository = {
     pokedexSlug: string,
     page: number,
     pageSize: number = 20,
-    name: string = "",
-    type1: string = "",
-    type2: string = ""
+    name: string = '',
+    type1: string = '',
+    type2: string = '',
   ): Promise<{ pokemons: (Pokemon & { pokedexEntries: PokedexEntry[]; typeEntries: TypeEntry[] })[]; total: number }> {
     const offset = (page - 1) * pageSize;
     let pokemons, total;
     if (name || type1 || type2) {
-      pokemons = await this.findByPokedexAndNameAndTypes(
-        pokedexSlug, name, type1, type2, pageSize, offset
-      );
-      total = await this.countByPokedexAndNameAndTypes(
-        pokedexSlug, name, type1, type2
-      );
+      pokemons = await this.findByPokedexAndNameAndTypes(pokedexSlug, name, type1, type2, pageSize, offset);
+      total = await this.countByPokedexAndNameAndTypes(pokedexSlug, name, type1, type2);
     } else {
       pokemons = await this.findAllByPokedexPaged(pokedexSlug, pageSize, offset);
       total = await this.countByPokedex(pokedexSlug);

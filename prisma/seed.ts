@@ -93,7 +93,7 @@ async function main() {
   console.log(`pokemon投入完了: ${allPokemons.length}件`);
 
   // 各ポケモンに全国図鑑＋1つ以上の地方図鑑をランダムで割り当て
-  const localPokedexIds = pokedexes.filter(p => p.id !== 1).map(p => p.id);
+  const localPokedexIds = pokedexes.filter((p) => p.id !== 1).map((p) => p.id);
   const allPokedexEntries = allPokemons.flatMap((p, i) => {
     // 1〜3個の地方図鑑にランダムで所属
     const shuffled = [...localPokedexIds].sort(() => 0.5 - Math.random());
@@ -113,7 +113,7 @@ async function main() {
   console.log(`pokedexEntry投入完了: ${allPokedexEntries.length}件`);
 
   // タイプエントリ（全ポケモンにランダムで1つか2つタイプを付与）
-  const typeIds = [10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180];
+  const typeIds = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180];
   const allTypeEntries = allPokemons.flatMap((p) => {
     const shuffled = [...typeIds].sort(() => 0.5 - Math.random());
     const typeCount = Math.random() < 0.5 ? 1 : 2;

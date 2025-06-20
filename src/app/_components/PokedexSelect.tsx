@@ -1,4 +1,12 @@
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel } from "@/components/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
+} from '@/components/select';
 
 export type PokedexGroup = {
   regionId: number;
@@ -23,7 +31,9 @@ export function PokedexSelect({ value, onChange, options }: Props) {
           <SelectGroup key={group.regionId}>
             <SelectLabel>{group.regionNameJa}</SelectLabel>
             {group.pokedexes.map((p) => (
-              <SelectItem key={p.slug} value={p.slug}>{p.nameJa}</SelectItem>
+              <SelectItem key={p.slug} value={p.slug}>
+                {p.nameJa}
+              </SelectItem>
             ))}
           </SelectGroup>
         ))}
