@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Pokemon, PokedexEntry, TypeEntry, Type } from '@prisma/client';
-import { PokemonFilterDialog } from '../_components/PokemonFilterDialog';
+import { PokemonSearch } from '../_components/PokemonSearch';
 import { PokemonCard } from '../_components/PokemonCard';
 import { Pagination } from '../_components/Pagination';
 import type { PokedexGroup } from '../_components/PokedexSelect';
@@ -24,13 +24,7 @@ const PAGE_SIZE = 20;
 // pokedexId→pokedex情報の逆引きマップを作成
 const pokedexIdMap: Record<number, { slug: string; nameJa: string }> = {};
 
-function HomeContainer({
-  pokedexOptions,
-  typeOptions,
-  searchParams = {},
-  pokemons,
-  total,
-}: PokemonSearchClientProps) {
+function HomeContainer({ pokedexOptions, typeOptions, searchParams = {}, pokemons, total }: PokemonSearchClientProps) {
   const router = useRouter();
   const initialSlug = typeof searchParams.pokedex === 'string' ? searchParams.pokedex : 'national';
   const initialType1 = typeof searchParams.type1 === 'string' ? searchParams.type1 : 'all';
@@ -63,26 +57,33 @@ function HomeContainer({
   });
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
-      <header className="container mx-auto px-6 py-4 max-w-6xl">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl">Pokédex</h1>
-          <div className="flex items-center justify-between">
-            <PokemonFilterDialog
-              pokedexOptions={pokedexOptions}
-              typeOptions={typeOptions}
-              initialSlug={selectedSlug}
-              initialType1={selectedType1}
-              initialType2={selectedType2}
-              initialName={searchName}
-              onApply={handleFilterApply}
-            />
-            <ThemeToggleButton />
+    <div>
+      <div className="mb-6 shadow-[0_1px_0_0_rgba(0,0,0,0.15)] dark:shadow-[0_1px_0_0_rgba(0,0,0,0.4)]">
+        <header className="container mx-auto px-6 max-w-6xl">
+          <div className="flex items-center justify-between py-3">
+            <h1 className="text-xl">Pokédex</h1>
+            <div className="flex items-center justify-between">
+              <ThemeToggleButton />
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+      </div>
 
-      <main className="container mx-auto p-6 max-w-6xl">
+      <div className="container mx-auto px-6 max-w-6xl mb-2">
+        <div className="flex items-center justify-end">
+          <PokemonSearch
+            pokedexOptions={pokedexOptions}
+            typeOptions={typeOptions}
+            initialSlug={selectedSlug}
+            initialType1={selectedType1}
+            initialType2={selectedType2}
+            initialName={searchName}
+            onApply={handleFilterApply}
+          />
+        </div>
+      </div>
+
+      <main className="container mx-auto px-6 max-w-6xl">
         {initialSlug && (
           <>
             <div className="grid gap-4 mb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

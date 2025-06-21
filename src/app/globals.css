@@ -112,12 +112,9 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
   body {
     @apply text-foreground;
-    @apply bg-gradient-to-br from-neutral-200 via-gray-200 to-gray-200;
-    @apply dark:bg-gradient-to-br dark:from-neutral-800 dark:via-neutral-900 dark:to-neutral-900;
+    @apply bg-gradient-to-br from-gray-200 via-gray-200 to-gray-200;
+    @apply dark:bg-gradient-to-br dark:from-gray-700 dark:via-gray-800 dark:to-gray-800;
   }
 }
