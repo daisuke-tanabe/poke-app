@@ -1,54 +1,53 @@
 'use client';
+
 import { useState } from 'react';
 import { Button } from '@/components/button';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from '@/components/dialog';
 import { Input } from '@/components/input';
-import { PokedexSelect } from './PokedexSelect';
-import type { PokedexGroup } from './PokedexSelect';
-import { Type } from '@prisma/client';
+import { PokedexSelect, PokedexSelectProps } from './PokedexSelect';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { z } from 'zod';
 
-export type PokemonFilterDialogProps = {
-  pokedexOptions: PokedexGroup[];
-  typeOptions: Type[];
-  initialSlug: string;
-  initialType1: string;
-  initialType2: string;
-  initialName: string;
-  onApply: (slug: string, type1: string, type2: string, name: string) => void;
+export type PokemonSearchProps = {
+  allRegionsWithPokedexes: PokedexSelectProps['regions'];
+  allTypes: { id: number; slug: string; nameJa: string; nameEn: string }[];
 };
 
-export function PokemonSearch({
-  pokedexOptions,
-  typeOptions,
-  initialSlug,
-  initialType1,
-  initialType2,
-  initialName,
-  onApply,
-}: PokemonFilterDialogProps) {
-  const [slug, setSlug] = useState(initialSlug);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>(
-    [initialType1, initialType2].filter((t) => t && t !== 'all'),
-  );
-  const [name, setName] = useState(initialName);
+const searchParamsSchema = z.object({
+  pokedex: z.string().optional().default('national'),
+  type1: z.string().optional().default(''),
+  type2: z.string().optional().default(''),
+  name: z.string().optional().default(''),
+});
+
+export function PokemonSearch({ allRegionsWithPokedexes, allTypes }: PokemonSearchProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const searchParams = useSearchParams();
+
+  // useSearchParamsでクエリパラメータを取得しzodでバリデーション
+  const paramsObj = Object.fromEntries(searchParams.entries());
+  const parsedParams = searchParamsSchema.safeParse(paramsObj);
+  const params = parsedParams.success ? parsedParams.data : searchParamsSchema.parse({});
+
+  const [slug, setSlug] = useState(params.pokedex);
+  const [name, setName] = useState(params.name);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(
+    [params.type1, params.type2].filter((t): t is string => typeof t === 'string' && t.length > 0),
+  );
 
   const handleTypeToggle = (typeSlug: string) => {
-    setSelectedTypes((prev) =>
-      prev.includes(typeSlug)
-        ? prev.filter((t) => t !== typeSlug)
-        : prev.length < 2
-          ? [...prev, typeSlug]
-          : [typeSlug, ...prev.slice(0, 1)],
-    );
+    setSelectedTypes((prev) => {
+      if (prev.includes(typeSlug)) return prev.filter((t) => t !== typeSlug);
+      if (prev.length < 2) return [...prev, typeSlug];
+      return [typeSlug, ...prev.slice(0, 1)];
+    });
   };
 
   const handleApply = () => {
-    // typeOptionsからslug→id変換（slugがなければ'all'）
-    const type1 = selectedTypes[0] ? String(typeOptions.find((t) => t.slug === selectedTypes[0])?.id ?? 'all') : 'all';
-    const type2 = selectedTypes[1] ? String(typeOptions.find((t) => t.slug === selectedTypes[1])?.id ?? 'all') : 'all';
-    onApply(slug, type1, type2, name);
+    const [type1 = '', type2 = ''] = selectedTypes;
+    router.push(`?pokedex=${slug}&page=1&name=${encodeURIComponent(name)}&type1=${type1}&type2=${type2}`);
     setOpen(false);
   };
 
@@ -67,7 +66,7 @@ export function PokemonSearch({
           {/* 図鑑 */}
           <div>
             <label className="block mb-3 font-semibold text-sm">図鑑</label>
-            <PokedexSelect value={slug} onChange={setSlug} options={pokedexOptions} />
+            <PokedexSelect onChange={setSlug} regions={allRegionsWithPokedexes} value={slug} />
           </div>
 
           {/* 名前 */}
@@ -86,7 +85,7 @@ export function PokemonSearch({
           <div>
             <label className="block mb-3 font-semibold text-sm">タイプ</label>
             <div className="flex flex-wrap gap-4">
-              {typeOptions.map((type) => {
+              {allTypes.map((type) => {
                 const selected = selectedTypes.includes(type.slug);
                 return (
                   <button
@@ -100,7 +99,7 @@ export function PokemonSearch({
                       transition
                     `}
                   >
-                    <Image src={`/type-icons/${type.slug}.svg`} alt={type.name_ja} width={28} height={28} unoptimized />
+                    <Image src={`/type-icons/${type.slug}.svg`} alt={type.nameEn} width={28} height={28} unoptimized />
                   </button>
                 );
               })}

@@ -12,6 +12,9 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   ...compat.extends('prettier'), // prettier競合ルールを無効化
+  {
+    ignores: ['**/generated/**'],
+  },
 ];
 
 export default eslintConfig;

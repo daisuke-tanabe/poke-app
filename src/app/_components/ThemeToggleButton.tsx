@@ -1,3 +1,5 @@
+'use client';
+
 import { useTheme } from 'next-themes';
 import { Sun, Moon, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';

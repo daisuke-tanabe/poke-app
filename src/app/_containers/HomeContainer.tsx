@@ -1,61 +1,16 @@
-'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Pokemon, PokedexEntry, TypeEntry, Type } from '@prisma/client';
-import { PokemonSearch } from '../_components/PokemonSearch';
-import { PokemonCard } from '../_components/PokemonCard';
+import { PokemonSearch, PokemonSearchProps } from '../_components/PokemonSearch';
 import { Pagination } from '../_components/Pagination';
-import type { PokedexGroup } from '../_components/PokedexSelect';
+import { PokemonGrid, PokemonGridProps } from '../_components/PokemonGrid';
 import { ThemeToggleButton } from '../_components/ThemeToggleButton';
 
 export type PokemonSearchClientProps = {
-  pokedexOptions: PokedexGroup[];
-  typeOptions: Type[];
-  searchParams?: { [key: string]: string | string[] | undefined };
-  pokemons: (Pokemon & { pokedexEntries: PokedexEntryWithPokedex[]; typeEntries: TypeEntry[] })[];
+  allRegionsWithPokedexes: PokemonSearchProps['allRegionsWithPokedexes'];
+  allTypes: PokemonSearchProps['allTypes'];
+  pokemons: PokemonGridProps['pokemons'];
   total: number;
 };
 
-// pokedexEntriesにpokedexリレーションを含める型
-export type PokedexEntryWithPokedex = PokedexEntry & { pokedex?: { name_ja: string; slug: string } };
-
-const PAGE_SIZE = 20;
-
-// pokedexId→pokedex情報の逆引きマップを作成
-const pokedexIdMap: Record<number, { slug: string; nameJa: string }> = {};
-
-function HomeContainer({ pokedexOptions, typeOptions, searchParams = {}, pokemons, total }: PokemonSearchClientProps) {
-  const router = useRouter();
-  const initialSlug = typeof searchParams.pokedex === 'string' ? searchParams.pokedex : 'national';
-  const initialType1 = typeof searchParams.type1 === 'string' ? searchParams.type1 : 'all';
-  const initialType2 = typeof searchParams.type2 === 'string' ? searchParams.type2 : 'all';
-  const initialName = typeof searchParams.name === 'string' ? searchParams.name : '';
-  const page = typeof searchParams.page === 'string' ? Number(searchParams.page) : 1;
-  const [searchName, setSearchName] = useState(initialName);
-  const [selectedSlug, setSelectedSlug] = useState(initialSlug);
-  const [selectedType1, setSelectedType1] = useState(initialType1);
-  const [selectedType2, setSelectedType2] = useState(initialType2);
-
-  const handleFilterApply = (slug: string, type1: string, type2: string, name: string) => {
-    setSelectedSlug(slug);
-    setSelectedType1(type1);
-    setSelectedType2(type2);
-    setSearchName(name);
-    router.push(
-      `?pokedex=${slug}&page=1&name=${encodeURIComponent(name)}&type1=${type1 === 'all' ? '' : type1}&type2=${type2 === 'all' ? '' : type2}`,
-    );
-  };
-
-  // pokedexIdMapを作成
-  pokedexOptions.forEach((group) => {
-    group.pokedexes.forEach((px: { slug: string; nameJa: string }) => {
-      const id = Number(px.slug);
-      if (!isNaN(id)) {
-        pokedexIdMap[id] = { slug: px.slug, nameJa: px.nameJa };
-      }
-    });
-  });
-
+function HomeContainer({ allRegionsWithPokedexes, pokemons, total, allTypes }: PokemonSearchClientProps) {
   return (
     <div>
       <div className="mb-6 shadow-[0_1px_0_0_rgba(0,0,0,0.15)] dark:shadow-[0_1px_0_0_rgba(0,0,0,0.4)]">
@@ -71,38 +26,13 @@ function HomeContainer({ pokedexOptions, typeOptions, searchParams = {}, pokemon
 
       <div className="container mx-auto px-6 max-w-6xl mb-2">
         <div className="flex items-center justify-end">
-          <PokemonSearch
-            pokedexOptions={pokedexOptions}
-            typeOptions={typeOptions}
-            initialSlug={selectedSlug}
-            initialType1={selectedType1}
-            initialType2={selectedType2}
-            initialName={searchName}
-            onApply={handleFilterApply}
-          />
+          <PokemonSearch allRegionsWithPokedexes={allRegionsWithPokedexes} allTypes={allTypes} />
         </div>
       </div>
 
       <main className="container mx-auto px-6 max-w-6xl">
-        {initialSlug && (
-          <>
-            <div className="grid gap-4 mb-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {pokemons.map((p) => (
-                <PokemonCard key={p.id} pokemon={p} typeOptions={typeOptions} searchPokedexSlug={initialSlug} />
-              ))}
-            </div>
-            <Pagination
-              total={total}
-              page={page}
-              pageSize={PAGE_SIZE}
-              onPageChange={(p) =>
-                router.push(
-                  `?pokedex=${initialSlug}&page=${p}&name=${encodeURIComponent(initialName)}&type1=${initialType1}&type2=${initialType2}`,
-                )
-              }
-            />
-          </>
-        )}
+        <PokemonGrid pokemons={pokemons} />
+        <Pagination pageSize={20} total={total} />
       </main>
     </div>
   );

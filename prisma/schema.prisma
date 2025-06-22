@@ -43,13 +43,13 @@ model Pokedex {
 }
 
 model PokedexEntry {
+  id           Int     @id @default(autoincrement())
   pokedex_id   Int
   pokemon_id   Int
   entry_number Int
   pokemon      Pokemon @relation(fields: [pokemon_id], references: [id], onDelete: Cascade)
   pokedex      Pokedex @relation(fields: [pokedex_id], references: [id], onDelete: Cascade)
 
-  @@id([pokemon_id, pokedex_id])
   @@unique([pokedex_id, entry_number])
 }
 
