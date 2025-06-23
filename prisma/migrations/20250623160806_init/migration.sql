@@ -33,11 +33,12 @@ CREATE TABLE "Pokedex" (
 
 -- CreateTable
 CREATE TABLE "PokedexEntry" (
-    "pokemon_id" INTEGER NOT NULL,
+    "id" SERIAL NOT NULL,
     "pokedex_id" INTEGER NOT NULL,
+    "pokemon_id" INTEGER NOT NULL,
     "entry_number" INTEGER NOT NULL,
 
-    CONSTRAINT "PokedexEntry_pkey" PRIMARY KEY ("pokemon_id","pokedex_id")
+    CONSTRAINT "PokedexEntry_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -64,6 +65,9 @@ CREATE UNIQUE INDEX "Region_slug_key" ON "Region"("slug");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Pokedex_slug_key" ON "Pokedex"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PokedexEntry_pokedex_id_entry_number_key" ON "PokedexEntry"("pokedex_id", "entry_number");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Type_slug_key" ON "Type"("slug");

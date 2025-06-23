@@ -41,8 +41,8 @@ Conventional Commits の仕様はコミットメッセージのための軽量�
 1. **fix:** _型_ `fix` を持つコミットはコードベースのバグにパッチを当てます (これは Semantic Versioning における [`PATCH`](http://semver.org/#summary) に相当します)。
 1. **feat:** _型_ `feat` を持つコミットはコードベースに新しい機能を追加します (これは Semantic Versioning における [`MINOR`](http://semver.org/#summary) に相当します)。
 1. **BREAKING CHANGE:** _フッター_ に `BREAKING CHANGE:` が書かれているか型/スコープの直後に `!` が追加されているコミットは API の破壊的変更を導入します (Semantic Versioning における [`MAJOR`](http://semver.org/#summary) に相当します)。
-`BREAKING CHANGE` は任意の _型_ のコミットに含めることができます。
-1. `fix:` や `feat:` 以外の _型_ も許されています。たとえば  [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional) (これは [Angular の規約](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines) が基になっています) は  `build:`, `chore:`, `ci:`,`docs:`, `style:`, `refactor:`, `perf:`, `test:`, などを推奨しています。
+   `BREAKING CHANGE` は任意の _型_ のコミットに含めることができます。
+1. `fix:` や `feat:` 以外の _型_ も許されています。たとえば [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional) (これは [Angular の規約](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines) が基になっています) は `build:`, `chore:`, `ci:`,`docs:`, `style:`, `refactor:`, `perf:`, `test:`, などを推奨しています。
 1. [git trailer format](https://git-scm.com/docs/git-interpret-trailers) に似た規約に従って、`BREAKING CHANGE: <タイトル>` 以外の _フッター_ が与えられるかもしれません。
 
 追加の型たちは Conventional Commits の仕様で義務付けられているものではなく、(BREAKING CHANGE を含まない限り) Semantic Versioning に対する暗黙的な効果を持ちません。
@@ -117,14 +117,14 @@ Refs: #123
 1. コミットがあなたのアプリケーションのためのバグ修正を行うとき、型 `fix` が使われなければならない (MUST)。
 1. スコープを型の後ろに記述してもよい (MAY)。スコープは、コードベースのセクションを記述する括弧で囲まれた名詞にしなければならない (MUST)。例: `fix(parser):`。
 1. 型/スコープの後ろのコロンとスペースの直後にタイトルが続かなければならない (MUST)。
-タイトルはコード変更の短かい要約である。例: `fix: array parsing issue when multiple spaces were contained in string`。
+   タイトルはコード変更の短かい要約である。例: `fix: array parsing issue when multiple spaces were contained in string`。
 1. 短いタイトルの後ろにより長いコミットの本文を追加してもよい (MAY)。これはコード変更に関する追加の情報を提供する。
-本文はタイトルの下の 1 行の空行から始めなければならない (MUST)。
+   本文はタイトルの下の 1 行の空行から始めなければならない (MUST)。
 1. コミットの本文は自由な形式であり、改行で区切られた複数の段落で構成することができる (MAY)。
 1. ひとつ以上のフッターを、本文の下の 1 行の空行に続けて書くことができる (MAY)。
-それぞれのフッターは、ひとつの単語トークン、それに続く `:<space>` か `<space>#` によるセパレータ、そして文字列の値から構成されなければならない (MUST) (これは [git trailer convention](https://git-scm.com/docs/git-interpret-trailers) に触発されている)。
+   それぞれのフッターは、ひとつの単語トークン、それに続く `:<space>` か `<space>#` によるセパレータ、そして文字列の値から構成されなければならない (MUST) (これは [git trailer convention](https://git-scm.com/docs/git-interpret-trailers) に触発されている)。
 1. フッターのトークンは空白の代わりに `-` を使わなければならない (MUST)。例えば `Acked-by` とする (これは複数段落からなる本文からフッターを区別するのに役立つ)。
-例外として `BREAKING CHANGE` があり、これをトークンとして使用することができる (MAY)。
+   例外として `BREAKING CHANGE` があり、これをトークンとして使用することができる (MAY)。
 1. フッターの値にはスペースと改行を含めることができる (MAY)。そして次のフッターのトークンとセパレータの組が見つかった時、以前のフッターのパースは終了しなければならない (MUST)。
 1. 破壊的変更は、コミットの型/スコープの接頭辞か、フッターによって明示されなければならない (MUST)。
 1. 破壊的変更がフッターとして含まれる場合は、大文字の BREAKING CHANGE の後ろにコロンとスペース、そしてタイトルを続けなければならない (MUST)。例: `BREAKING CHANGE: environment variables now take precedence over config files`。
@@ -135,18 +135,18 @@ Refs: #123
 
 ## 何故 Conventional Commits を使うのか
 
-* 変更履歴 (CHANGELOG) を自動的に生成できます。
-* semantic version 単位で自動的に履歴をまとめられます (コミットの型に基づきます)。
-* チームメイトや一般のユーザー、およびその他の利害関係者へ変更の内容を伝えることができます。
-* ビルドや公開の処理をトリガーできます。
-* より構造化されたコミット履歴を調査できるようにすることで、人々があなたのプロジェクトに貢献しやすくなります。
+- 変更履歴 (CHANGELOG) を自動的に生成できます。
+- semantic version 単位で自動的に履歴をまとめられます (コミットの型に基づきます)。
+- チームメイトや一般のユーザー、およびその他の利害関係者へ変更の内容を伝えることができます。
+- ビルドや公開の処理をトリガーできます。
+- より構造化されたコミット履歴を調査できるようにすることで、人々があなたのプロジェクトに貢献しやすくなります。
 
 ## よくある質問
 
 ### 初期の開発段階ではコミットメッセージをどのように扱うべきですか？
 
 すでに製品をリリースしているかのように進めることをお勧めします。
-あなたの仲間のソフトウェア開発者であっても、普通は *誰か* があなたのソフトウェアを使っています。
+あなたの仲間のソフトウェア開発者であっても、普通は _誰か_ があなたのソフトウェアを使っています。
 何が修正されたのかや何が壊れたのかなどを彼らは知りたいでしょう。
 
 ### コミットタイトル (1 行目) の型は大文字か小文字のどちらがよいですか？
@@ -183,7 +183,7 @@ SemVer を使用して、この仕様に対する独自の拡張をリリース�
 間違いをマージやリリースする前に、`git rebase -i` を使ってコミット履歴を編集することをお勧めします。
 リリース後であれば、どのようなツールやプロセスを使用しているかによって後始末は異なってくるでしょう。
 
-#### 仕様に *ない* 型を使った場合、例えば `feat` ではなく `feet`
+#### 仕様に _ない_ 型を使った場合、例えば `feat` ではなく `feet`
 
 最悪のシナリオはコミットが Conventional Commits の仕様を満たさない場合です。しかしそれは世界の終わりではありません。
 それは単に仕様に基づいているツールによってコミットが見逃されるだけでしかありません。

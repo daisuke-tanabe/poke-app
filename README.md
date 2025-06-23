@@ -1,6 +1,6 @@
 # poke-app
 
-このリポジトリはAI駆動開発の検証プロジェクトです。
+AIエージェントによる自動化・開発の限界や課題を探求し、知見を共有するためのリポジトリです。
 
 ## プロジェクト概要
 
@@ -13,7 +13,7 @@
 - Next.js 15 (TypeScript 5)
 - Node.js 22
 - Prisma 6
-- PostgreSQL 17（Dockerコンテナ）
+- PostgreSQL 17（Supabase CLIによるローカル環境）
 - Tailwind CSS
 
 ## セットアップ手順
@@ -22,36 +22,21 @@
    ```sh
    npm install
    ```
-2. DBコンテナの起動
-   ```sh
-   docker compose up -d
-   ```
-3. Prismaマイグレーション＆シード投入
+2. Prismaマイグレーション＆シード投入
    ```sh
    npx prisma generate
-   npx prisma migrate reset --force
+   npx prisma migrate deploy
    npx tsx prisma/seed.ts
    ```
-4. 開発サーバー起動
+3. 開発サーバー起動（Supabaseローカル環境も自動で起動します）
    ```sh
    npm run dev
    ```
-5. ブラウザで http://localhost:3000/ を開き、全国図鑑のポケモン一覧が表示されることを確認
+4. ブラウザで http://localhost:3000/ を開き、全国図鑑のポケモン一覧が表示されることを確認
 
 ## コミットメッセージのフォーマット
 
-このリポジトリでは [Conventional Commits](https://www.conventionalcommits.org/ja/v1.0.0/) に従ったコミットメッセージを必須とします。
-
-例:
-
-- feat: 新機能の追加
-- fix: バグ修正
-- docs: ドキュメントのみの変更
-- style: フォーマットやスペースのみの変更
-- refactor: リファクタリング
-- perf: パフォーマンス改善
-- test: テスト追加・修正
-- chore: ビルドや補助ツール、ライブラリの変更
+コミットメッセージの詳細なルールは [`docs/commit-message-rules.md`](docs/commit-message-rules.md) を参照してください。
 
 ## コーディング・依存パッケージ方針
 
@@ -62,13 +47,10 @@
 
 - `.env` にはDB接続情報が含まれるため、コミットしないでください
 - すべてのコード・設計・データ投入はAIエージェントによる自動生成・自動化を前提としています
+- DBはSupabase CLIで起動・管理しています。Docker Composeは不要です。
 
 ## 要件定義書の格納場所
 
 要件定義書は `docs/` ディレクトリ配下（`docs/*`）に格納しています。
 
 - 例: `docs/requirements.md`, `docs/db_schema.md` など
-
----
-
-AIエージェントによる自動化・開発の限界や課題を探求し、知見を共有するためのリポジトリです。

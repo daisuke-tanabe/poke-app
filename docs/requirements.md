@@ -55,9 +55,10 @@
 
 - 対応ブラウザ：Google Chrome、Edge、Safari / iOS Safari、Android（直前のメジャーバージョン2つ前まで保証）
 - TypeScript v5 latest、Next.js v15 latest、Node.js v22 latest、PostgreSQL v17 latest、Prisma v6 latestを使用
+- データベースはSupabase CLIでローカル起動したPostgreSQLを利用
 
 ## 6. 開発・運用環境
 
 - データアクセスレイヤーを設け、サーバーコンポーネントからデータベース操作を行う。
-- バックエンドはNode.js、データベースはPostgreSQL、ORMはPrismaを利用。
+- バックエンドはNode.js、データベースはSupabase（PostgreSQL）、ORMはPrismaを利用。
 - UIコンポーネントライブラリとして shadcn/ui（shadcn） を導入し、デザイン・UI実装に利用する。
