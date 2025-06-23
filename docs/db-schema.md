@@ -96,12 +96,12 @@
 - 主キーはid（SERIAL, オートインクリメント）
 - (pokedex_id, entry_number) の組み合わせにUNIQUE制約を付与し、同じ図鑑内でentry_numberが重複しないようにする
 
-| カラム       | 型                 | 説明                                                |
-| ------------ | ------------------ | --------------------------------------------------- |
-| id           | SERIAL             | 主キー、オートインクリメント                        |
-| pokemon_id   | integer [NOT NULL] | pokemonsテーブルのidを参照、外部キー                |
-| pokedex_id   | integer [NOT NULL] | pokedexesテーブルのidを参照、外部キー               |
-| entry_number | integer [NOT NULL] | 図鑑内での番号、ユニーク制約                        |
+| カラム       | 型                 | 説明                                  |
+| ------------ | ------------------ | ------------------------------------- |
+| id           | SERIAL             | 主キー、オートインクリメント          |
+| pokemon_id   | integer [NOT NULL] | pokemonsテーブルのidを参照、外部キー  |
+| pokedex_id   | integer [NOT NULL] | pokedexesテーブルのidを参照、外部キー |
+| entry_number | integer [NOT NULL] | 図鑑内での番号、ユニーク制約          |
 
 ---
 

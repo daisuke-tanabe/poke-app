@@ -2,7 +2,6 @@ import { pokemonRepository } from '@/repositories/pokemonRepository';
 import HomeContainer from './_containers/HomeContainer';
 
 import { z } from 'zod';
-import { findOrThrow } from '@/lib/utils';
 
 const searchParamsSchema = z.object({
   pokedex: z.string().optional().default('national'),
@@ -28,10 +27,12 @@ export default async function Home({
   const parsedParams = searchParamsSchema.safeParse(rawParams);
   if (!parsedParams.success) throw new Error('Invalid query parameters');
 
-  // public fetch
+  // public fetch start--------------------------------------------------
   const rawAllTypes = await pokemonRepository.getAllTypes();
   const rawAllRegionsWithPokedexes = await pokemonRepository.getAllRegionsWithPokedexes();
-  const rawPokemons = await pokemonRepository.getPokemonsWithTotal(
+
+  // 図鑑主軸のポケモンデータ取得（検索・ページング対応）
+  const rawPokedex = await pokemonRepository.getPokedexEntriesWithForms(
     parsedParams.data.pokedex,
     parsedParams.data.page,
     20,
@@ -39,16 +40,12 @@ export default async function Home({
     parsedParams.data.type1,
     parsedParams.data.type2,
   );
-
-  const mappedPokemons = rawPokemons.pokemons.map(({ pokedexEntries, ...p }) => ({
-    ...p,
-    pokedexEntry: findOrThrow(pokedexEntries, (e) => e.pokedex.slug === parsedParams.data.pokedex),
-  }));
+  // -------------------------------------------------- public fetch end
 
   return (
     <HomeContainer
-      pokemons={mappedPokemons}
-      total={rawPokemons.total}
+      pokemons={rawPokedex.pokemons}
+      total={rawPokedex.total}
       allRegionsWithPokedexes={rawAllRegionsWithPokedexes}
       allTypes={rawAllTypes}
     />

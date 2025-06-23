@@ -15,12 +15,19 @@ datasource db {
 }
 
 model Pokemon {
-  id             Int            @id @default(autoincrement())
-  name_ja        String
-  name_kana      String
-  name_en        String
-  height         Float
-  weight         Float
+  id          Int           @id @default(autoincrement())
+  name_ja     String
+  name_kana   String
+  name_en     String
+  forms       PokemonForm[]
+}
+
+model PokemonForm {
+  id          Int           @id @default(autoincrement())
+  pokemon_id  Int
+  name_ja     String
+  form_name   String
+  pokemon     Pokemon       @relation(fields: [pokemon_id], references: [id], onDelete: Cascade)
   pokedexEntries PokedexEntry[]
   typeEntries    TypeEntry[]
 }
@@ -44,14 +51,14 @@ model Pokedex {
 }
 
 model PokedexEntry {
-  id           Int     @id @default(autoincrement())
-  pokedex_id   Int
-  pokemon_id   Int
-  entry_number Int
-  pokemon      Pokemon @relation(fields: [pokemon_id], references: [id], onDelete: Cascade)
-  pokedex      Pokedex @relation(fields: [pokedex_id], references: [id], onDelete: Cascade)
-
-  @@unique([pokedex_id, entry_number])
+  id              Int           @id @default(autoincrement())
+  pokedex_id      Int
+  pokemon_form_id Int
+  entry_number    Int
+  pokedex         Pokedex       @relation(fields: [pokedex_id], references: [id], onDelete: Cascade)
+  pokemonForm     PokemonForm   @relation(fields: [pokemon_form_id], references: [id], onDelete: Cascade)
+  typeEntries     TypeEntry[]
+  @@unique([pokedex_id, entry_number, pokemon_form_id])
 }
 
 model Type {
@@ -63,11 +70,12 @@ model Type {
 }
 
 model TypeEntry {
-  pokemon_id   Int
-  type_id      Int
-  entry_number Int
-  pokemon      Pokemon @relation(fields: [pokemon_id], references: [id], onDelete: Cascade)
-  type         Type    @relation(fields: [type_id], references: [id], onDelete: Cascade)
-
-  @@id([pokemon_id, type_id])
+  id               Int          @id @default(autoincrement())
+  pokedex_entry_id Int
+  type_id          Int
+  pokemon_form_id  Int
+  type             Type         @relation(fields: [type_id], references: [id], onDelete: Cascade)
+  pokedexEntry     PokedexEntry @relation(fields: [pokedex_entry_id], references: [id], onDelete: Cascade)
+  pokemonForm      PokemonForm  @relation(fields: [pokemon_form_id], references: [id], onDelete: Cascade)
+  @@unique([pokedex_entry_id, type_id])
 }

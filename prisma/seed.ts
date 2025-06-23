@@ -2,13 +2,11 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  // 既存データを全削除
+  // 既存データを全削除（マスタは削除しない）
   await prisma.typeEntry.deleteMany();
   await prisma.pokedexEntry.deleteMany();
+  await prisma.pokemonForm.deleteMany();
   await prisma.pokemon.deleteMany();
-  await prisma.type.deleteMany();
-  await prisma.pokedex.deleteMany();
-  await prisma.region.deleteMany();
   console.log('全データ削除完了');
 
   // 全リージョン
@@ -26,6 +24,7 @@ async function main() {
       { id: 90, name_ja: 'ガラル', name_en: 'Galar', slug: 'galar' },
       { id: 100, name_ja: 'パルデア', name_en: 'Paldea', slug: 'paldea' },
     ],
+    skipDuplicates: true,
   });
   // 全図鑑
   const pokedexes = [
@@ -49,7 +48,7 @@ async function main() {
     { id: 101, region_id: 100, name_ja: 'キタカミ', name_en: 'Kitakami', slug: 'kitakami' },
     { id: 102, region_id: 100, name_ja: 'ブルーベリー', name_en: 'Blueberry', slug: 'blueberry' },
   ];
-  await prisma.pokedex.createMany({ data: pokedexes });
+  await prisma.pokedex.createMany({ data: pokedexes, skipDuplicates: true });
   // 全タイプ
   await prisma.type.createMany({
     data: [
@@ -72,61 +71,71 @@ async function main() {
       { id: 170, name_ja: 'はがね', name_en: 'Steel', slug: 'steel' },
       { id: 180, name_ja: 'フェアリー', name_en: 'Fairy', slug: 'fairy' },
     ],
+    skipDuplicates: true,
   });
   console.log('マスタデータ投入完了');
 
-  // ポケモン100匹
-  const pokemonCount = 100;
-  const allPokemons = Array.from({ length: pokemonCount }).map((_, i) => ({
-    id: i + 1,
-    name_ja: `ポケモン${i + 1}`,
-    name_kana: `Pokemon${i + 1}`,
-    name_en: `Pokemon${i + 1}`,
-    height: 1.0 + (i % 5) * 0.1,
-    weight: 10.0 + (i % 5) * 2,
-  }));
-  await prisma.pokemon.createMany({ data: allPokemons });
-  console.log('pokemon投入完了');
-
-  // 全国図鑑エントリ（id順でentry_number=ポケモンid）
-  const nationalEntries = allPokemons.map((p) => ({
-    pokemon_id: p.id,
-    pokedex_id: 1,
-    entry_number: p.id,
-  }));
-
-  // 地方図鑑ごとに所属ポケモンを集めてentry_numberをユニークに振る
-  const localPokedexIds = pokedexes.filter((p) => p.id !== 1).map((p) => p.id);
-  const localEntries: { pokemon_id: number; pokedex_id: number; entry_number: number }[] = [];
-  for (const pokedexId of localPokedexIds) {
-    // 各地方図鑑にランダムで所属するポケモンを抽出
-    const belongPokemons = allPokemons.filter(() => Math.random() < 0.2); // 20%くらい所属
-    belongPokemons.forEach((p, idx) => {
-      localEntries.push({
-        pokemon_id: p.id,
-        pokedex_id: pokedexId,
-        entry_number: idx + 1, // その図鑑内で連番
-      });
+  // ポケモン20匹
+  const pokemonCount = 20;
+  const allPokemons = [];
+  const allForms = [];
+  let formId = 1;
+  for (let i = 1; i <= pokemonCount; i++) {
+    allPokemons.push({
+      id: i,
+      name_ja: `ポケモン${i}`,
+      name_kana: `Pokemon${i}`,
+      name_en: `Pokemon${i}`,
     });
+    // 2フォーム（通常・アローラ）
+    allForms.push({
+      id: formId,
+      pokemon_id: i,
+      name_ja: '通常',
+      form_name: '通常',
+    });
+    formId++;
+    allForms.push({
+      id: formId,
+      pokemon_id: i,
+      name_ja: 'アローラ',
+      form_name: 'アローラ',
+    });
+    formId++;
   }
+  await prisma.pokemon.createMany({ data: allPokemons });
+  await prisma.pokemonForm.createMany({ data: allForms });
+  console.log('pokemon・form投入完了');
 
-  const allPokedexEntries = [...nationalEntries, ...localEntries];
-  await prisma.pokedexEntry.createMany({ data: allPokedexEntries });
-  console.log(`pokedexEntry投入完了: ${allPokedexEntries.length}件`);
+  // 全国図鑑エントリ（各ポケモンの2フォームをentry_number=ポケモンidで登録）
+  const nationalEntries = allForms.map((form, idx) => ({
+    pokedex_id: 1,
+    entry_number: Math.floor(idx / 2) + 1, // ポケモンごとに同じentry_number
+    pokemon_form_id: form.id,
+  }));
+  await prisma.pokedexEntry.createMany({ data: nationalEntries });
 
-  // タイプエントリ（全ポケモンにランダムで1つか2つタイプを付与）
-  const typeIds = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180];
-  const allTypeEntries = allPokemons.flatMap((p) => {
-    const shuffled = [...typeIds].sort(() => 0.5 - Math.random());
-    const typeCount = Math.random() < 0.5 ? 1 : 2;
-    return Array.from({ length: typeCount }).map((_, t) => ({
-      pokemon_id: p.id,
-      type_id: shuffled[t],
-      entry_number: t + 1,
-    }));
+  // タイプエントリ（各フォームに1つか2つタイプをランダム付与）
+  const typeIds = [10, 20, 30, 40, 50, 60, 70, 80];
+  const allPokedexEntries = await prisma.pokedexEntry.findMany();
+  // pokedexEntryのfind条件修正
+  const typeEntryData: { pokedex_entry_id: number; type_id: number; pokemon_form_id: number }[] = [];
+  allForms.forEach((form) => {
+    const pokedexEntry = allPokedexEntries.find((e) => e.pokemon_form_id === form.id && e.pokedex_id === 1);
+    if (pokedexEntry) {
+      const shuffled = [...typeIds].sort(() => 0.5 - Math.random());
+      const typeCount = Math.random() < 0.5 ? 1 : 2;
+      for (let t = 0; t < typeCount; t++) {
+        typeEntryData.push({
+          pokedex_entry_id: pokedexEntry.id,
+          type_id: shuffled[t],
+          pokemon_form_id: form.id,
+        });
+      }
+    }
   });
-  await prisma.typeEntry.createMany({ data: allTypeEntries });
-  console.log(`typeEntry投入完了: ${allTypeEntries.length}件`);
+  await prisma.typeEntry.createMany({ data: typeEntryData });
+  console.log(`typeEntry投入完了: ${typeEntryData.length}件`);
 }
 
 main()

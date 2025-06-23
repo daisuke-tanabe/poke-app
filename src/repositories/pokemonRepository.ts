@@ -17,29 +17,42 @@ export const pokemonRepository = {
       }[];
     }[]
   > {
+    // Prismaの戻り値型を明示
     const regions = await prisma.region.findMany({
       include: {
         pokedexes: true,
       },
       orderBy: { id: 'asc' },
     });
-    return regions.map((region) => ({
-      id: region.id,
-      nameJa: region.name_ja,
-      nameEn: region.name_en,
-      pokedexes: region.pokedexes.map((pokedex) => ({
-        id: pokedex.id,
-        slug: pokedex.slug,
-        nameJa: pokedex.name_ja,
-        nameEn: pokedex.name_en,
-      })),
-    }));
+    return regions.map(
+      (region: {
+        id: number;
+        name_ja: string;
+        name_en: string;
+        pokedexes: {
+          id: number;
+          slug: string;
+          name_ja: string;
+          name_en: string;
+        }[];
+      }) => ({
+        id: region.id,
+        nameJa: region.name_ja,
+        nameEn: region.name_en,
+        pokedexes: region.pokedexes.map((pokedex) => ({
+          id: pokedex.id,
+          slug: pokedex.slug,
+          nameJa: pokedex.name_ja,
+          nameEn: pokedex.name_en,
+        })),
+      }),
+    );
   },
 
   // 全タイプ一覧を取得
   async getAllTypes() {
     const types = await prisma.type.findMany({ orderBy: { id: 'asc' } });
-    return types.map((type) => ({
+    return types.map((type: { id: number; slug: string; name_ja: string; name_en: string }) => ({
       id: type.id,
       slug: type.slug,
       nameJa: type.name_ja,
@@ -48,121 +61,105 @@ export const pokemonRepository = {
   },
 
   /**
-   * 図鑑・タイプ・名前・ページ指定でポケモンリストと件数を取得
-   * @param pokedexSlug 図鑑スラッグ
-   * @param page ページ番号（1始まり）
-   * @param pageSize 1ページあたり件数
-   * @param name 名前検索
-   * @param type1 タイプ1
-   * @param type2 タイプ2
+   * 指定図鑑のエントリをentry_number順で取得し、ポケモン・フォーム・タイプをネストして返す（検索・ページング対応）
+   *
+   * 先にfindUniqueで図鑑(slug)の存在チェックを行う理由：
+   * - slugが不正な場合は明示的にエラーを返したい（エントリ0件との区別）
+   * - findMany/catchではslug不正は検知できず、空配列になるだけ
+   * - APIとして「slug不正は400/404、エントリ0件は空配列」など明確に分けたい場合に有効
    */
-  async getPokemonsWithTotal(
+  async getPokedexEntriesWithForms(
     pokedexSlug: string,
-    page: number,
+    page: number = 1,
     pageSize: number = 20,
-    name: string,
-    type1: string,
-    type2: string,
+    name: string = '',
+    type1: string = '',
+    type2: string = '',
   ): Promise<{
     pokemons: {
       id: number;
       nameJa: string;
       nameEn: string;
-      pokedexEntries: {
+      entryNumber: number;
+      forms: {
         id: number;
-        entryNumber: number;
-        pokedex: {
-          id: number;
-          slug: string;
-          nameJa: string;
-          nameEn: string;
-        };
+        nameJa: string;
+        types: string[];
       }[];
-      types: string[];
     }[];
     total: number;
   }> {
-    const offset = (page - 1) * pageSize;
-    // 検索条件を共通化
-    const where = {
-      pokedexEntries: {
-        some: {
-          pokedex: {
-            slug: pokedexSlug,
-          },
-        },
-      },
-      OR: [{ name_ja: { contains: name } }, { name_kana: { contains: name } }, { name_en: { contains: name } }],
-      AND: [type1, type2].reduce<
-        {
-          typeEntries: {
-            some: {
-              type: {
-                slug: string;
-              };
-            };
-          };
-        }[]
-      >((result, current) => {
-        if (!current) return result;
-        return [
-          ...result,
-          {
-            typeEntries: {
-              some: {
-                type: {
-                  slug: current,
-                },
-              },
-            },
-          },
-        ];
-      }, []),
-    };
+    // slug存在チェック（なければ明示的にエラー）
+    const pokedex = await prisma.pokedex.findUnique({ where: { slug: pokedexSlug } });
+    if (!pokedex) throw new Error('Pokedex not found');
+    const skip = (page - 1) * pageSize;
 
-    const pokemons = await prisma.pokemon.findMany({
-      where,
+    // 検索条件
+    const typeFilters = [type1, type2].filter(Boolean).map((slug) => ({
+      typeEntries: { some: { type: { slug } } },
+    }));
+    const nameFilter = name
+      ? {
+          OR: [
+            { pokemonForm: { pokemon: { name_ja: { contains: name } } } },
+            { pokemonForm: { pokemon: { name_kana: { contains: name } } } },
+            { pokemonForm: { pokemon: { name_en: { contains: name } } } },
+          ],
+        }
+      : {};
+
+    // 図鑑エントリを全件取得
+    const allEntries = await prisma.pokedexEntry.findMany({
+      where: {
+        pokedex_id: pokedex.id,
+        ...nameFilter,
+        pokemonForm: typeFilters.length ? { AND: typeFilters } : undefined,
+      },
+      orderBy: { entry_number: 'asc' },
       include: {
-        pokedexEntries: {
+        pokemonForm: {
           include: {
-            pokedex: true,
-          },
-        },
-        typeEntries: {
-          include: {
-            type: {
-              select: {
-                slug: true,
-              },
-            },
+            pokemon: true,
+            typeEntries: { include: { type: true } },
           },
         },
       },
-      skip: offset,
-      take: pageSize,
     });
 
-    // 検索条件をそのままcountにも適用
-    const total = await prisma.pokemon.count({ where });
+    // ポケモンIDごとにグループ化し、フォームをネスト
+    const grouped = allEntries.reduce(
+      (acc, entry) => {
+        const pokeId = entry.pokemonForm.pokemon_id;
+        if (!acc[pokeId]) {
+          acc[pokeId] = {
+            id: pokeId,
+            nameJa: entry.pokemonForm.pokemon.name_ja,
+            nameEn: entry.pokemonForm.pokemon.name_en,
+            entryNumber: entry.entry_number, // 最初のエントリ番号を代表値とする
+            forms: [],
+          };
+        }
+        acc[pokeId].forms.push({
+          id: entry.pokemonForm.id,
+          nameJa: entry.pokemonForm.form_name,
+          types: entry.pokemonForm.typeEntries.map((te: { type: { slug: string } }) => te.type.slug),
+        });
+        return acc;
+      },
+      {} as Record<
+        number,
+        {
+          id: number;
+          nameJa: string;
+          nameEn: string;
+          entryNumber: number;
+          forms: { id: number; nameJa: string; types: string[] }[];
+        }
+      >,
+    );
 
-    return {
-      pokemons: pokemons.map(({ id, name_en, name_ja, pokedexEntries, typeEntries }) => ({
-        id,
-        nameJa: name_ja,
-        nameEn: name_en,
-        pokedexEntries: pokedexEntries.map((entry) => ({
-          id: entry.id,
-          entryNumber: entry.entry_number,
-          pokedex: {
-            id: entry.pokedex.id,
-            slug: entry.pokedex.slug,
-            nameJa: entry.pokedex.name_ja,
-            nameEn: entry.pokedex.name_en,
-          },
-        })),
-        types: typeEntries.map(({ type }) => type.slug),
-      })),
-      total,
-    };
+    const allPokemons = Object.values(grouped);
+    const pagedPokemons = allPokemons.slice(skip, skip + pageSize);
+    return { pokemons: pagedPokemons, total: allPokemons.length };
   },
 };

@@ -5,20 +5,15 @@ export type PokemonCardProps = {
   id: number;
   nameJa: string;
   nameEn: string;
-  pokedexEntry: {
+  entryNumber: number;
+  forms: {
     id: number;
-    entryNumber: number;
-    pokedex: {
-      id: number;
-      nameJa: string;
-      nameEn: string;
-      slug: string;
-    };
-  };
-  types: string[];
+    nameJa: string;
+    types: string[];
+  }[];
 };
 
-export function PokemonCard({ id, nameJa, nameEn, pokedexEntry, types }: PokemonCardProps) {
+export function PokemonCard({ id, nameJa, nameEn, entryNumber, forms }: PokemonCardProps) {
   return (
     <Card
       className="bg-white/40 dark:bg-white/5 backdrop-blur-md rounded-xl shadow-none
@@ -30,7 +25,7 @@ export function PokemonCard({ id, nameJa, nameEn, pokedexEntry, types }: Pokemon
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">{nameJa}</CardTitle>
-          <span className="text-sm text-muted-foreground">#{pokedexEntry.entryNumber}</span>
+          <span className="text-sm text-muted-foreground">#{entryNumber}</span>
         </div>
         <CardDescription className="text-xs">{nameEn}</CardDescription>
       </CardHeader>
@@ -41,7 +36,7 @@ export function PokemonCard({ id, nameJa, nameEn, pokedexEntry, types }: Pokemon
           </div>
         </div>
         <div className="flex gap-1">
-          {types.map((type) => {
+          {forms[0].types.map((type) => {
             return (
               <div key={type} className="flex items-center justify-center w-7 h-7">
                 <Image src={`/type-icons/${type}.svg`} alt={type} width={24} height={24} unoptimized />
