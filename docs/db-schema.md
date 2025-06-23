@@ -93,14 +93,14 @@
 
 - ポケモンと図鑑（pokedex）の所属関係を管理する中間テーブル
 - 各エントリは必ずポケモン・図鑑の両方に紐づく（外部キーはNOT NULL）
-- 主キーは`pokemon_id`と`pokedex_id`の複合主キー
-- 1つのポケモンが複数の図鑑に所属可能
-- (pokedex_id, entry_number) の組み合わせにUNIQUE制約を付与し、同じ図鑑内でentry_numberが重複しないようにする。
+- 主キーはid（SERIAL, オートインクリメント）
+- (pokedex_id, entry_number) の組み合わせにUNIQUE制約を付与し、同じ図鑑内でentry_numberが重複しないようにする
 
 | カラム       | 型                 | 説明                                                |
 | ------------ | ------------------ | --------------------------------------------------- |
-| pokemon_id   | integer [NOT NULL] | pokemonsテーブルのidを参照、外部キー（複合主キー）  |
-| pokedex_id   | integer [NOT NULL] | pokedexesテーブルのidを参照、外部キー（複合主キー） |
+| id           | SERIAL             | 主キー、オートインクリメント                        |
+| pokemon_id   | integer [NOT NULL] | pokemonsテーブルのidを参照、外部キー                |
+| pokedex_id   | integer [NOT NULL] | pokedexesテーブルのidを参照、外部キー               |
 | entry_number | integer [NOT NULL] | 図鑑内での番号、ユニーク制約                        |
 
 ---
