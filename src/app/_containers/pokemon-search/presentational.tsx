@@ -2,28 +2,44 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/button';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
+} from '@/components/select';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from '@/components/dialog';
 import { Input } from '@/components/input';
-import { PokedexSelect, PokedexSelectProps } from './PokedexSelect';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { z } from 'zod';
+import { searchParamsSchema } from '@/lib/searchParamsSchema';
 
-export type PokemonSearchProps = {
-  allRegionsWithPokedexes: PokedexSelectProps['regions'];
-  allTypes: { id: number; slug: string; nameJa: string; nameEn: string }[];
+export type PokemonSearchPresentationalProps = {
+  modal?: string;
+  allTypes: {
+    id: number;
+    slug: string;
+    nameJa: string;
+    nameEn: string;
+  }[];
+  allRegionsWithPokedexes: {
+    id: number;
+    nameJa: string;
+    nameEn: string;
+    pokedexes: {
+      id: number;
+      slug: string;
+      nameJa: string;
+      nameEn: string;
+    }[];
+  }[];
 };
 
-const searchParamsSchema = z.object({
-  pokedex: z.string().optional().default('national'),
-  type1: z.string().optional().default(''),
-  type2: z.string().optional().default(''),
-  name: z.string().optional().default(''),
-});
-
-export function PokemonSearch({ allRegionsWithPokedexes, allTypes }: PokemonSearchProps) {
+export function PokemonSearchPresentational({ allRegionsWithPokedexes, allTypes }: PokemonSearchPresentationalProps) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
 
   // useSearchParamsでクエリパラメータを取得しzodでバリデーション
@@ -31,6 +47,7 @@ export function PokemonSearch({ allRegionsWithPokedexes, allTypes }: PokemonSear
   const parsedParams = searchParamsSchema.safeParse(paramsObj);
   const params = parsedParams.success ? parsedParams.data : searchParamsSchema.parse({});
 
+  const [isOpen, setIsOpen] = useState(false);
   const [slug, setSlug] = useState(params.pokedex);
   const [name, setName] = useState(params.name);
   const [selectedTypes, setSelectedTypes] = useState<string[]>(
@@ -48,11 +65,15 @@ export function PokemonSearch({ allRegionsWithPokedexes, allTypes }: PokemonSear
   const handleApply = () => {
     const [type1 = '', type2 = ''] = selectedTypes;
     router.push(`?pokedex=${slug}&page=1&name=${encodeURIComponent(name)}&type1=${type1}&type2=${type2}`);
-    setOpen(false);
+    setIsOpen(false);
+  };
+
+  const handleOpenChange = () => {
+    setIsOpen((prevState) => !prevState);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="ghost">Advanced Search</Button>
       </DialogTrigger>
@@ -66,7 +87,23 @@ export function PokemonSearch({ allRegionsWithPokedexes, allTypes }: PokemonSear
           {/* 図鑑 */}
           <div>
             <label className="block mb-3 font-semibold text-sm">図鑑</label>
-            <PokedexSelect onChange={setSlug} regions={allRegionsWithPokedexes} value={slug} />
+            <Select value={slug} onValueChange={setSlug}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="図鑑を選択" />
+              </SelectTrigger>
+              <SelectContent>
+                {allRegionsWithPokedexes.map((region) => (
+                  <SelectGroup key={region.id}>
+                    <SelectLabel>{region.nameJa}</SelectLabel>
+                    {region.pokedexes.map((p) => (
+                      <SelectItem key={p.slug} value={p.slug}>
+                        {p.nameJa}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* 名前 */}

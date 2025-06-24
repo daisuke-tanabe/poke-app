@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from 'next-themes';
+import { HeaderContainer } from './_containers/header';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,7 +17,10 @@ export default function RootLayout({
     <html lang="ja" suppressHydrationWarning>
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="min-h-screen">{children}</div>
+          <div className="min-h-screen">
+            <HeaderContainer />
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

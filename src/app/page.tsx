@@ -1,22 +1,7 @@
-import { pokemonRepository } from '@/repositories/pokemonRepository';
-import HomeContainer from './_containers/HomeContainer';
-
-import { z } from 'zod';
-
-const searchParamsSchema = z.object({
-  pokedex: z.string().optional().default('national'),
-  type1: z.string().optional().default(''),
-  type2: z.string().optional().default(''),
-  name: z.string().optional().default(''),
-  page: z
-    .string()
-    .transform((v) => parseInt(v, 10))
-    .refine((v) => !isNaN(v) && v > 0, {
-      message: 'ページ番号は1以上の整数である必要があります',
-    })
-    .optional()
-    .default('1'),
-});
+import { PokemonSearchContainer } from './_containers/pokemon-search';
+import { PokemonPaginationContainer } from './_containers/pokemon-pagination/container';
+import { PokemonGridContainer } from './_containers/pokemon-grid';
+import { searchParamsSchema } from '@/lib/searchParamsSchema';
 
 export default async function Home({
   searchParams,
@@ -27,27 +12,30 @@ export default async function Home({
   const parsedParams = searchParamsSchema.safeParse(rawParams);
   if (!parsedParams.success) throw new Error('Invalid query parameters');
 
-  // public fetch start--------------------------------------------------
-  const rawAllTypes = await pokemonRepository.getAllTypes();
-  const rawAllRegionsWithPokedexes = await pokemonRepository.getAllRegionsWithPokedexes();
-
-  // 図鑑主軸のポケモンデータ取得（検索・ページング対応）
-  const rawPokedex = await pokemonRepository.getPokedexEntriesWithForms(
-    parsedParams.data.pokedex,
-    parsedParams.data.page,
-    20,
-    parsedParams.data.name,
-    parsedParams.data.type1,
-    parsedParams.data.type2,
-  );
-  // -------------------------------------------------- public fetch end
-
   return (
-    <HomeContainer
-      pokemons={rawPokedex.pokemons}
-      total={rawPokedex.total}
-      allRegionsWithPokedexes={rawAllRegionsWithPokedexes}
-      allTypes={rawAllTypes}
-    />
+    <>
+      <div className="container mx-auto px-6 max-w-6xl mb-2">
+        <div className="flex items-center justify-end">
+          <PokemonSearchContainer />
+        </div>
+      </div>
+
+      <main className="container mx-auto px-6 max-w-6xl">
+        <PokemonGridContainer
+          currentPage={parsedParams.data.page}
+          perPage={20}
+          pokemonName={parsedParams.data.name}
+          pokedexSlug={parsedParams.data.pokedex}
+          types={[parsedParams.data.type1, parsedParams.data.type2]}
+        />
+        <PokemonPaginationContainer
+          currentPage={parsedParams.data.page}
+          perPage={20}
+          pokemonName={parsedParams.data.name}
+          pokedexSlug={parsedParams.data.pokedex}
+          types={[parsedParams.data.type1, parsedParams.data.type2]}
+        />
+      </main>
+    </>
   );
 }
