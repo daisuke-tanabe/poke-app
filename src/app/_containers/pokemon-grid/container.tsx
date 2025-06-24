@@ -1,6 +1,6 @@
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/card';
 import Image from 'next/image';
 
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/card';
 import { pokemonRepository } from '@/repositories/pokemonRepository';
 
 export type PokemonGridContainerProps = {

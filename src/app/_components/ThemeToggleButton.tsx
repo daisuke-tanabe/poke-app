@@ -1,22 +1,23 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { Sun, Moon, Loader2 } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+
 import { Button } from '@/components/button';
 
 export function ThemeToggleButton() {
   const { theme, setTheme } = useTheme();
   // mountedフラグはSSRとCSRの初回描画内容のズレ（hydration mismatch）を防ぐために必要です。
   // next-themesはサーバー側ではthemeが未確定のため、クライアントマウント後のみアイコンを描画することでエラーを回避します。
-  const [mounted, setMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setIsMounted(true);
   }, []);
 
   const icon = (() => {
-    if (!mounted) return <Loader2 className="w-5 h-5 animate-spin" />;
+    if (!isMounted) return <Loader2 className="w-5 h-5 animate-spin" />;
     return theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />;
   })();
 

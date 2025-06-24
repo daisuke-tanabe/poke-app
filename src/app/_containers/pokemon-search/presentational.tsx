@@ -1,7 +1,12 @@
 'use client';
 
+import Image from 'next/image';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+
 import { Button } from '@/components/button';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from '@/components/dialog';
+import { Input } from '@/components/input';
 import {
   Select,
   SelectTrigger,
@@ -11,10 +16,6 @@ import {
   SelectGroup,
   SelectLabel,
 } from '@/components/select';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from '@/components/dialog';
-import { Input } from '@/components/input';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 import { searchParamsSchema } from '@/lib/searchParamsSchema';
 
 export type PokemonSearchPresentationalProps = {
@@ -123,16 +124,16 @@ export function PokemonSearchPresentational({ allRegionsWithPokedexes, allTypes 
             <label className="block mb-3 font-semibold text-sm">タイプ</label>
             <div className="flex flex-wrap gap-4">
               {allTypes.map((type) => {
-                const selected = selectedTypes.includes(type.slug);
+                const isSelected = selectedTypes.includes(type.slug);
                 return (
                   <button
                     key={type.id}
                     type="button"
                     onClick={() => handleTypeToggle(type.slug)}
-                    aria-pressed={selected}
+                    aria-pressed={isSelected}
                     className={`
                       rounded-full
-                      ${selected ? 'opacty-100 scale-120' : 'opacity-30'}
+                      ${isSelected ? 'opacty-100 scale-120' : 'opacity-30'}
                       transition
                     `}
                   >

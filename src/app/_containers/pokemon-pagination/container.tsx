@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { pokemonRepository } from '@/repositories/pokemonRepository';
+
 import { PokemonSearchPresentational } from './presentational';
 
 export type PokemonPaginationContainerProps = {

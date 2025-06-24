@@ -70,11 +70,11 @@ export const pokemonRepository = {
    */
   async getPokedexEntriesWithForms(
     pokedexSlug: string,
-    page: number = 1,
-    pageSize: number = 20,
-    name: string = '',
-    type1: string = '',
-    type2: string = '',
+    page: 1,
+    pageSize: 20,
+    name: '',
+    type1: '',
+    type2: '',
   ): Promise<{
     pokemons: {
       id: number;
