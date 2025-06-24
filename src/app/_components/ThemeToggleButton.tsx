@@ -17,8 +17,8 @@ export function ThemeToggleButton() {
   }, []);
 
   const icon = (() => {
-    if (!isMounted) return <Loader2 className="w-5 h-5 animate-spin" />;
-    return theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />;
+    if (!isMounted) return <Loader2 className="h-5 w-5 animate-spin" />;
+    return theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />;
   })();
 
   return (

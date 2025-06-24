@@ -4,7 +4,6 @@ import { PokemonGridContainer } from './_containers/pokemon-grid';
 import { PokemonPaginationContainer } from './_containers/pokemon-pagination/container';
 import { PokemonSearchContainer } from './_containers/pokemon-search';
 
-
 export default async function Home({
   searchParams,
 }: {
@@ -16,13 +15,13 @@ export default async function Home({
 
   return (
     <>
-      <div className="container mx-auto px-6 max-w-6xl mb-2">
+      <div className="container mx-auto mb-2 max-w-6xl px-6">
         <div className="flex items-center justify-end">
           <PokemonSearchContainer />
         </div>
       </div>
 
-      <main className="container mx-auto px-6 max-w-6xl">
+      <main className="container mx-auto max-w-6xl px-6">
         <PokemonGridContainer
           currentPage={parsedParams.data.page}
           perPage={20}

@@ -34,7 +34,7 @@ export function PokemonSearchPresentational({
   if (pageCount <= 1) return null;
 
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
+    <div className="flex flex-wrap justify-center gap-2">
       {Array.from({ length: pageCount }, (_, i) => (
         <Button
           key={i + 1}

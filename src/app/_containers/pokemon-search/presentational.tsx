@@ -87,7 +87,7 @@ export function PokemonSearchPresentational({ allRegionsWithPokedexes, allTypes 
         <div className="flex flex-col gap-6 py-6">
           {/* 図鑑 */}
           <div>
-            <label className="block mb-3 font-semibold text-sm">図鑑</label>
+            <label className="mb-3 block text-sm font-semibold">図鑑</label>
             <Select value={slug} onValueChange={setSlug}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="図鑑を選択" />
@@ -109,7 +109,7 @@ export function PokemonSearchPresentational({ allRegionsWithPokedexes, allTypes 
 
           {/* 名前 */}
           <div>
-            <label className="block mb-3 font-semibold text-sm">名前</label>
+            <label className="mb-3 block text-sm font-semibold">名前</label>
             <Input
               type="text"
               value={name}
@@ -121,7 +121,7 @@ export function PokemonSearchPresentational({ allRegionsWithPokedexes, allTypes 
 
           {/* タイプ、2つまで複数選択可能（アイコン形式） */}
           <div>
-            <label className="block mb-3 font-semibold text-sm">タイプ</label>
+            <label className="mb-3 block text-sm font-semibold">タイプ</label>
             <div className="flex flex-wrap gap-4">
               {allTypes.map((type) => {
                 const isSelected = selectedTypes.includes(type.slug);
@@ -131,11 +131,7 @@ export function PokemonSearchPresentational({ allRegionsWithPokedexes, allTypes 
                     type="button"
                     onClick={() => handleTypeToggle(type.slug)}
                     aria-pressed={isSelected}
-                    className={`
-                      rounded-full
-                      ${isSelected ? 'opacty-100 scale-120' : 'opacity-30'}
-                      transition
-                    `}
+                    className={`rounded-full ${isSelected ? 'opacty-100 scale-120' : 'opacity-30'} transition`}
                   >
                     <Image src={`/type-icons/${type.slug}.svg`} alt={type.nameEn} width={28} height={28} unoptimized />
                   </button>
