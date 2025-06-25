@@ -28,30 +28,30 @@ export async function PokemonGridContainer({
   );
 
   return (
-    <div className="mb-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid gap-2 mb-10 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       {rawPokemons.map((pokemon) => (
         <Card
           key={pokemon.id}
-          className="rounded-xl border-t border-r border-b border-l border-t-white/70 border-r-white/35 border-b-white/35 border-l-white/70 bg-white/40 shadow-none backdrop-blur-md dark:border-t-white/15 dark:border-r-white/7.5 dark:border-b-white/7.5 dark:border-l-white/15 dark:bg-white/5"
+          className="gap-4 py-4 rounded-xl border-t border-r border-b border-l border-t-white/70 border-r-white/35 border-b-white/35 border-l-white/70 bg-white/40 shadow-none backdrop-blur-md dark:border-t-white/15 dark:border-r-white/7.5 dark:border-b-white/7.5 dark:border-l-white/15 dark:bg-white/5"
         >
-          <CardHeader>
+          <CardHeader className="px-4 gap-1">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">{pokemon.nameJa}</CardTitle>
+              <CardTitle className="text-sm">{pokemon.nameJa}</CardTitle>
               <span className="text-muted-foreground text-sm">#{pokemon.entryNumber}</span>
             </div>
             <CardDescription className="text-xs">{pokemon.nameEn}</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="mb-6 flex justify-center">
-              <div className="flex h-24 w-24 items-center justify-center">
-                <Image src={pokemon.forms[0].sprite} alt={pokemon.nameEn} width={80} height={80} unoptimized />
+          <CardContent className="px-4">
+            <div className="mb-4 flex justify-center">
+              <div className="flex h-16 w-16 items-center justify-center">
+                <Image src={pokemon.forms[0].sprite} alt={pokemon.nameEn} width={64} height={64} unoptimized />
               </div>
             </div>
             <div className="flex gap-1">
               {pokemon.forms[0].types.map((type) => {
                 return (
-                  <div key={type} className="flex h-7 w-7 items-center justify-center">
-                    <Image src={`/type-icons/${type}.svg`} alt={type} width={24} height={24} unoptimized />
+                  <div key={type} className="flex h-5 w-5 items-center justify-center">
+                    <Image src={`/type-icons/${type}.svg`} alt={type} width={20} height={20} unoptimized />
                   </div>
                 );
               })}
