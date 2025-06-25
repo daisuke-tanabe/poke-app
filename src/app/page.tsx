@@ -1,7 +1,7 @@
 import { searchParamsSchema } from '@/lib/searchParamsSchema';
 
 import { PokemonGridContainer } from './_containers/pokemon-grid';
-import { PokemonPaginationContainer } from './_containers/pokemon-pagination/container';
+import { PokemonPaginationContainer } from './_containers/pokemon-pagination';
 import { PokemonSearchContainer } from './_containers/pokemon-search';
 
 export default async function Home({

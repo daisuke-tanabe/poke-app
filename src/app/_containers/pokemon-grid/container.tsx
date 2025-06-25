@@ -44,7 +44,7 @@ export async function PokemonGridContainer({
           <CardContent>
             <div className="mb-6 flex justify-center">
               <div className="flex h-24 w-24 items-center justify-center">
-                <Image src={`/pokemons/${pokemon.id}.png`} alt={pokemon.nameEn} width={80} height={80} unoptimized />
+                <Image src={pokemon.forms[0].sprite} alt={pokemon.nameEn} width={80} height={80} unoptimized />
               </div>
             </div>
             <div className="flex gap-1">

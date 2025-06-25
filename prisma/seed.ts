@@ -75,67 +75,378 @@ async function main() {
   });
   console.log('マスタデータ投入完了');
 
-  // ポケモン20匹
-  const pokemonCount = 20;
-  const allPokemons = [];
-  const allForms = [];
-  let formId = 1;
-  for (let i = 1; i <= pokemonCount; i++) {
-    allPokemons.push({
-      id: i,
-      name_ja: `ポケモン${i}`,
-      name_kana: `Pokemon${i}`,
-      name_en: `Pokemon${i}`,
-    });
-    // 2フォーム（通常・アローラ）
-    allForms.push({
-      id: formId,
-      pokemon_id: i,
-      name_ja: '通常',
-      form_name: '通常',
-    });
-    formId++;
-    allForms.push({
-      id: formId,
-      pokemon_id: i,
-      name_ja: 'アローラ',
-      form_name: 'アローラ',
-    });
-    formId++;
-  }
-  await prisma.pokemon.createMany({ data: allPokemons });
-  await prisma.pokemonForm.createMany({ data: allForms });
+  // --- サンプルデータ投入 ---
+  // タイプslug→idマップ
+  const typeSlugToId = {
+    grass: 50,
+    poison: 80,
+    fire: 20,
+    ice: 60,
+  };
+
+  // 全国図鑑
+  const nationalPokemons = [
+    {
+      id: 1,
+      name_ja: 'フシギダネ',
+      name_kana: 'フシギダネ',
+      name_en: 'Bulbasaur',
+      entry_number: 1,
+      forms: [
+        {
+          id: 1,
+          name_ja: '通常',
+          form_name: '通常',
+          name_en: 'Normal',
+          order: 1,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1.png',
+          types: ['grass', 'poison'],
+        },
+        {
+          id: 2,
+          name_ja: '色違い',
+          form_name: '色違い',
+          name_en: 'Shiny',
+          order: 2,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1-s.png',
+          types: ['grass', 'poison'],
+        },
+      ],
+    },
+    {
+      id: 2,
+      name_ja: 'フシギソウ',
+      name_kana: 'フシギソウ',
+      name_en: 'Ivysaur',
+      entry_number: 2,
+      forms: [
+        {
+          id: 3,
+          name_ja: '通常',
+          form_name: '通常',
+          name_en: 'Normal',
+          order: 1,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2.png',
+          types: ['grass', 'poison'],
+        },
+        {
+          id: 4,
+          name_ja: '色違い',
+          form_name: '色違い',
+          name_en: 'Shiny',
+          order: 2,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2-s.png',
+          types: ['grass', 'poison'],
+        },
+      ],
+    },
+    {
+      id: 3,
+      name_ja: 'フシギバナ',
+      name_kana: 'フシギバナ',
+      name_en: 'Venusaur',
+      entry_number: 3,
+      forms: [
+        {
+          id: 5,
+          name_ja: '通常',
+          form_name: '通常',
+          name_en: 'Normal',
+          order: 1,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3.png',
+          types: ['grass', 'poison'],
+        },
+        {
+          id: 6,
+          name_ja: '色違い',
+          form_name: '色違い',
+          name_en: 'Shiny',
+          order: 2,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-s.png',
+          types: ['grass', 'poison'],
+        },
+        {
+          id: 7,
+          name_ja: 'メガシンカ',
+          form_name: 'メガシンカ',
+          name_en: 'Mega',
+          order: 3,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-m.png',
+          types: ['grass', 'poison'],
+        },
+        {
+          id: 8,
+          name_ja: '色違いメガシンカ',
+          form_name: '色違いメガシンカ',
+          name_en: 'Shiny Mega',
+          order: 4,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-m-s.png',
+          types: ['grass', 'poison'],
+        },
+      ],
+    },
+    {
+      id: 4,
+      name_ja: 'ロコン',
+      name_kana: 'ロコン',
+      name_en: 'Vulpix',
+      entry_number: 4,
+      forms: [
+        {
+          id: 9,
+          name_ja: '通常',
+          form_name: '通常',
+          name_en: 'Normal',
+          order: 1,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37.png',
+          types: ['fire'],
+        },
+        {
+          id: 10,
+          name_ja: '色違い',
+          form_name: '色違い',
+          name_en: 'Shiny',
+          order: 2,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-s.png',
+          types: ['fire'],
+        },
+        {
+          id: 11,
+          name_ja: 'アローラ',
+          form_name: 'アローラ',
+          name_en: 'Alola',
+          order: 3,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola.png',
+          types: ['ice'],
+        },
+        {
+          id: 12,
+          name_ja: '色違いアローラ',
+          form_name: '色違いアローラ',
+          name_en: 'Shiny Alola',
+          order: 4,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola-s.png',
+          types: ['ice'],
+        },
+      ],
+    },
+  ];
+
+  // キタカミ図鑑
+  const kitakamiPokemons = [
+    {
+      id: 4,
+      name_ja: 'ロコン',
+      name_kana: 'ロコン',
+      name_en: 'Vulpix',
+      entry_number: 1,
+      forms: [
+        {
+          id: 9,
+          name_ja: '通常',
+          form_name: '通常',
+          name_en: 'Normal',
+          order: 1,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37.png',
+          types: ['fire'],
+        },
+        {
+          id: 10,
+          name_ja: '色違い',
+          form_name: '色違い',
+          name_en: 'Shiny',
+          order: 2,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-s.png',
+          types: ['fire'],
+        },
+      ],
+    },
+  ];
+
+  // ブルーベリー図鑑
+  const blueberryPokemons = [
+    {
+      id: 1,
+      name_ja: 'フシギダネ',
+      name_kana: 'フシギダネ',
+      name_en: 'Bulbasaur',
+      entry_number: 1,
+      forms: [
+        {
+          id: 1,
+          name_ja: '通常',
+          form_name: '通常',
+          name_en: 'Normal',
+          order: 1,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1.png',
+          types: ['grass', 'poison'],
+        },
+        {
+          id: 2,
+          name_ja: '色違い',
+          form_name: '色違い',
+          name_en: 'Shiny',
+          order: 2,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1-s.png',
+          types: ['grass', 'poison'],
+        },
+      ],
+    },
+    {
+      id: 2,
+      name_ja: 'フシギソウ',
+      name_kana: 'フシギソウ',
+      name_en: 'Ivysaur',
+      entry_number: 2,
+      forms: [
+        {
+          id: 3,
+          name_ja: '通常',
+          form_name: '通常',
+          name_en: 'Normal',
+          order: 1,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2.png',
+          types: ['grass', 'poison'],
+        },
+        {
+          id: 4,
+          name_ja: '色違い',
+          form_name: '色違い',
+          name_en: 'Shiny',
+          order: 2,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2-s.png',
+          types: ['grass', 'poison'],
+        },
+      ],
+    },
+    {
+      id: 3,
+      name_ja: 'フシギバナ',
+      name_kana: 'フシギバナ',
+      name_en: 'Venusaur',
+      entry_number: 3,
+      forms: [
+        {
+          id: 5,
+          name_ja: '通常',
+          form_name: '通常',
+          name_en: 'Normal',
+          order: 1,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3.png',
+          types: ['grass', 'poison'],
+        },
+        {
+          id: 6,
+          name_ja: '色違い',
+          form_name: '色違い',
+          name_en: 'Shiny',
+          order: 2,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-s.png',
+          types: ['grass', 'poison'],
+        },
+      ],
+    },
+    {
+      id: 4,
+      name_ja: 'ロコン',
+      name_kana: 'ロコン',
+      name_en: 'Vulpix',
+      entry_number: 3,
+      forms: [
+        {
+          id: 11,
+          name_ja: 'アローラ',
+          form_name: 'アローラ',
+          name_en: 'Alola',
+          order: 3,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola.png',
+          types: ['ice'],
+        },
+        {
+          id: 12,
+          name_ja: '色違いアローラ',
+          form_name: '色違いアローラ',
+          name_en: 'Shiny Alola',
+          order: 4,
+          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola-s.png',
+          types: ['ice'],
+        },
+      ],
+    },
+  ];
+
+  // ---投入処理---
+  // ポケモン・フォーム投入（重複しないよう一意化）
+  const allPokemons = [
+    ...nationalPokemons,
+    ...kitakamiPokemons.filter((k) => !nationalPokemons.some((n) => n.id === k.id)),
+    ...blueberryPokemons.filter(
+      (b) => !nationalPokemons.some((n) => n.id === b.id) && !kitakamiPokemons.some((k) => k.id === b.id),
+    ),
+  ];
+  const allForms = [
+    ...nationalPokemons.flatMap((p) => p.forms.map((f) => ({ ...f, pokemon_id: p.id }))),
+    ...kitakamiPokemons
+      .flatMap((p) => p.forms.map((f) => ({ ...f, pokemon_id: p.id })))
+      .filter((f) => !nationalPokemons.some((np) => np.forms.some((nf) => nf.id === f.id))),
+    ...blueberryPokemons
+      .flatMap((p) => p.forms.map((f) => ({ ...f, pokemon_id: p.id })))
+      .filter(
+        (f) =>
+          !nationalPokemons.some((np) => np.forms.some((nf) => nf.id === f.id)) &&
+          !kitakamiPokemons.some((kp) => kp.forms.some((kf) => kf.id === f.id)),
+      ),
+  ];
+  await prisma.pokemon.createMany({
+    data: allPokemons.map((p) => ({ id: p.id, name_ja: p.name_ja, name_kana: p.name_kana, name_en: p.name_en })),
+  });
+  // typesを除外してフォーム投入
+  await prisma.pokemonForm.createMany({ data: allForms.map(({ types, ...rest }) => rest) });
   console.log('pokemon・form投入完了');
 
-  // 全国図鑑エントリ（各ポケモンの2フォームをentry_number=ポケモンidで登録）
-  const nationalEntries = allForms.map((form, idx) => ({
-    pokedex_id: 1,
-    entry_number: Math.floor(idx / 2) + 1, // ポケモンごとに同じentry_number
-    pokemon_form_id: form.id,
-  }));
-  await prisma.pokedexEntry.createMany({ data: nationalEntries });
+  // 図鑑エントリ投入
+  const pokedexEntries = [
+    ...nationalPokemons
+      .map((p) => p.forms.map((f) => ({ pokedex_id: 1, entry_number: p.entry_number, pokemon_form_id: f.id })))
+      .flat(),
+    ...kitakamiPokemons
+      .map((p) => p.forms.map((f) => ({ pokedex_id: 101, entry_number: p.entry_number, pokemon_form_id: f.id })))
+      .flat(),
+    ...blueberryPokemons
+      .map((p) => p.forms.map((f) => ({ pokedex_id: 102, entry_number: p.entry_number, pokemon_form_id: f.id })))
+      .flat(),
+  ];
+  await prisma.pokedexEntry.createMany({ data: pokedexEntries });
 
-  // タイプエントリ（各フォームに1つか2つタイプをランダム付与）
-  const typeIds = [10, 20, 30, 40, 50, 60, 70, 80];
+  // タイプエントリ投入
   const allPokedexEntries = await prisma.pokedexEntry.findMany();
-  // pokedexEntryのfind条件修正
-  const typeEntryData: { pokedex_entry_id: number; type_id: number; pokemon_form_id: number }[] = [];
-  allForms.forEach((form) => {
-    const pokedexEntry = allPokedexEntries.find((e) => e.pokemon_form_id === form.id && e.pokedex_id === 1);
-    if (pokedexEntry) {
-      const shuffled = [...typeIds].sort(() => 0.5 - Math.random());
-      const typeCount = Math.random() < 0.5 ? 1 : 2;
-      for (let t = 0; t < typeCount; t++) {
-        typeEntryData.push({
-          pokedex_entry_id: pokedexEntry.id,
-          type_id: shuffled[t],
-          pokemon_form_id: form.id,
-        });
+  const typeEntryData = [];
+  for (const p of [...nationalPokemons, ...kitakamiPokemons, ...blueberryPokemons]) {
+    for (const f of p.forms) {
+      const entry = allPokedexEntries.find(
+        (e) =>
+          e.pokemon_form_id === f.id &&
+          ((e.pokedex_id === 1 && nationalPokemons.some((np) => np.id === p.id)) ||
+            (e.pokedex_id === 101 && kitakamiPokemons.some((kp) => kp.id === p.id)) ||
+            (e.pokedex_id === 102 && blueberryPokemons.some((bp) => bp.id === p.id))),
+      );
+      if (entry) {
+        for (const t of f.types) {
+          typeEntryData.push({
+            pokedex_entry_id: entry.id,
+            type_id: typeSlugToId[t as keyof typeof typeSlugToId],
+            pokemon_form_id: f.id,
+          });
+        }
       }
     }
-  });
-  await prisma.typeEntry.createMany({ data: typeEntryData });
-  console.log(`typeEntry投入完了: ${typeEntryData.length}件`);
+  }
+  // 重複排除
+  const uniqueTypeEntryData = Array.from(
+    new Map(typeEntryData.map((e) => [`${e.pokedex_entry_id}_${e.type_id}`, e])).values(),
+  );
+  await prisma.typeEntry.createMany({ data: uniqueTypeEntryData });
+  console.log(`typeEntry投入完了: ${uniqueTypeEntryData.length}件`);
 }
 
 main()

@@ -70,11 +70,11 @@ export const pokemonRepository = {
    */
   async getPokedexEntriesWithForms(
     pokedexSlug: string,
-    page: 1,
-    pageSize: 20,
-    name: '',
-    type1: '',
-    type2: '',
+    page: number,
+    pageSize: number,
+    name: string,
+    type1: string,
+    type2: string,
   ): Promise<{
     pokemons: {
       id: number;
@@ -85,6 +85,7 @@ export const pokemonRepository = {
         id: number;
         nameJa: string;
         types: string[];
+        sprite: string;
       }[];
     }[];
     total: number;
@@ -143,7 +144,10 @@ export const pokemonRepository = {
           id: entry.pokemonForm.id,
           nameJa: entry.pokemonForm.form_name,
           types: entry.pokemonForm.typeEntries.map((te: { type: { slug: string } }) => te.type.slug),
+          sprite: entry.pokemonForm.sprite,
+          order: entry.pokemonForm.order,
         });
+        acc[pokeId].forms.sort((a, b) => a.order - b.order);
         return acc;
       },
       {} as Record<
@@ -153,12 +157,16 @@ export const pokemonRepository = {
           nameJa: string;
           nameEn: string;
           entryNumber: number;
-          forms: { id: number; nameJa: string; types: string[] }[];
+          forms: { id: number; nameJa: string; types: string[]; sprite: string; order: number }[];
         }
       >,
     );
 
-    const allPokemons = Object.values(grouped);
+    // orderを返却前に除去
+    const allPokemons = Object.values(grouped).map((p) => ({
+      ...p,
+      forms: p.forms.map(({ order, ...rest }) => rest),
+    }));
     const pagedPokemons = allPokemons.slice(skip, skip + pageSize);
     return { pokemons: pagedPokemons, total: allPokemons.length };
   },

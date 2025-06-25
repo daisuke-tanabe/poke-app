@@ -4,10 +4,21 @@ CREATE TABLE "Pokemon" (
     "name_ja" TEXT NOT NULL,
     "name_kana" TEXT NOT NULL,
     "name_en" TEXT NOT NULL,
-    "height" DOUBLE PRECISION NOT NULL,
-    "weight" DOUBLE PRECISION NOT NULL,
 
     CONSTRAINT "Pokemon_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PokemonForm" (
+    "id" SERIAL NOT NULL,
+    "pokemon_id" INTEGER NOT NULL,
+    "name_ja" TEXT NOT NULL,
+    "form_name" TEXT NOT NULL,
+    "name_en" TEXT NOT NULL,
+    "sprite" TEXT NOT NULL,
+    "order" INTEGER NOT NULL,
+
+    CONSTRAINT "PokemonForm_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -35,7 +46,7 @@ CREATE TABLE "Pokedex" (
 CREATE TABLE "PokedexEntry" (
     "id" SERIAL NOT NULL,
     "pokedex_id" INTEGER NOT NULL,
-    "pokemon_id" INTEGER NOT NULL,
+    "pokemon_form_id" INTEGER NOT NULL,
     "entry_number" INTEGER NOT NULL,
 
     CONSTRAINT "PokedexEntry_pkey" PRIMARY KEY ("id")
@@ -53,12 +64,16 @@ CREATE TABLE "Type" (
 
 -- CreateTable
 CREATE TABLE "TypeEntry" (
-    "pokemon_id" INTEGER NOT NULL,
+    "id" SERIAL NOT NULL,
+    "pokedex_entry_id" INTEGER NOT NULL,
     "type_id" INTEGER NOT NULL,
-    "entry_number" INTEGER NOT NULL,
+    "pokemon_form_id" INTEGER NOT NULL,
 
-    CONSTRAINT "TypeEntry_pkey" PRIMARY KEY ("pokemon_id","type_id")
+    CONSTRAINT "TypeEntry_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PokemonForm_pokemon_id_order_key" ON "PokemonForm"("pokemon_id", "order");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Region_slug_key" ON "Region"("slug");
@@ -67,22 +82,31 @@ CREATE UNIQUE INDEX "Region_slug_key" ON "Region"("slug");
 CREATE UNIQUE INDEX "Pokedex_slug_key" ON "Pokedex"("slug");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "PokedexEntry_pokedex_id_entry_number_key" ON "PokedexEntry"("pokedex_id", "entry_number");
+CREATE UNIQUE INDEX "PokedexEntry_pokedex_id_entry_number_pokemon_form_id_key" ON "PokedexEntry"("pokedex_id", "entry_number", "pokemon_form_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Type_slug_key" ON "Type"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TypeEntry_pokedex_entry_id_type_id_key" ON "TypeEntry"("pokedex_entry_id", "type_id");
+
+-- AddForeignKey
+ALTER TABLE "PokemonForm" ADD CONSTRAINT "PokemonForm_pokemon_id_fkey" FOREIGN KEY ("pokemon_id") REFERENCES "Pokemon"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Pokedex" ADD CONSTRAINT "Pokedex_region_id_fkey" FOREIGN KEY ("region_id") REFERENCES "Region"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "PokedexEntry" ADD CONSTRAINT "PokedexEntry_pokemon_id_fkey" FOREIGN KEY ("pokemon_id") REFERENCES "Pokemon"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "PokedexEntry" ADD CONSTRAINT "PokedexEntry_pokedex_id_fkey" FOREIGN KEY ("pokedex_id") REFERENCES "Pokedex"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TypeEntry" ADD CONSTRAINT "TypeEntry_pokemon_id_fkey" FOREIGN KEY ("pokemon_id") REFERENCES "Pokemon"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "PokedexEntry" ADD CONSTRAINT "PokedexEntry_pokemon_form_id_fkey" FOREIGN KEY ("pokemon_form_id") REFERENCES "PokemonForm"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TypeEntry" ADD CONSTRAINT "TypeEntry_type_id_fkey" FOREIGN KEY ("type_id") REFERENCES "Type"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TypeEntry" ADD CONSTRAINT "TypeEntry_pokedex_entry_id_fkey" FOREIGN KEY ("pokedex_entry_id") REFERENCES "PokedexEntry"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TypeEntry" ADD CONSTRAINT "TypeEntry_pokemon_form_id_fkey" FOREIGN KEY ("pokemon_form_id") REFERENCES "PokemonForm"("id") ON DELETE CASCADE ON UPDATE CASCADE;
