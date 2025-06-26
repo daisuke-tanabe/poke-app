@@ -101,11 +101,11 @@ export const pokemonRepository = {
     }));
     const nameFilter = name
       ? {
-          OR: [
-            { pokemonForm: { pokemon: { name_ja: { contains: name } } } },
-            { pokemonForm: { pokemon: { name_kana: { contains: name } } } },
-            { pokemonForm: { pokemon: { name_en: { contains: name } } } },
-          ],
+          form: {
+            pokemon: {
+              OR: [{ name_ja: { contains: name } }, { name_kana: { contains: name } }, { name_en: { contains: name } }],
+            },
+          },
         }
       : {};
 
@@ -114,43 +114,40 @@ export const pokemonRepository = {
       where: {
         pokedex_id: pokedex.id,
         ...nameFilter,
-        pokemonForm: typeFilters.length ? { AND: typeFilters } : undefined,
+        ...(typeFilters.length
+          ? {
+              form: { AND: typeFilters, ...(nameFilter.form ?? {}) },
+            }
+          : {}),
       },
       orderBy: { entry_number: 'asc' },
       include: {
-        pokemonForm: {
+        form: {
           include: {
             pokemon: true,
             typeEntries: { include: { type: true } },
           },
         },
       },
-    });
+    }) as {
+      entry_number: number;
+      form: {
+        id: number;
+        pokemon_id: number;
+        form_name: string;
+        sprite: string;
+        order: number;
+        pokemon: {
+          name_ja: string;
+          name_en: string;
+        };
+        typeEntries: { type: { slug: string } }[];
+      };
+    }[];
 
     // ポケモンIDごとにグループ化し、フォームをネスト
     const grouped = allEntries.reduce(
-      (acc, entry) => {
-        const pokeId = entry.pokemonForm.pokemon_id;
-        if (!acc[pokeId]) {
-          acc[pokeId] = {
-            id: pokeId,
-            nameJa: entry.pokemonForm.pokemon.name_ja,
-            nameEn: entry.pokemonForm.pokemon.name_en,
-            entryNumber: entry.entry_number, // 最初のエントリ番号を代表値とする
-            forms: [],
-          };
-        }
-        acc[pokeId].forms.push({
-          id: entry.pokemonForm.id,
-          nameJa: entry.pokemonForm.form_name,
-          types: entry.pokemonForm.typeEntries.map((te: { type: { slug: string } }) => te.type.slug),
-          sprite: entry.pokemonForm.sprite,
-          order: entry.pokemonForm.order,
-        });
-        acc[pokeId].forms.sort((a, b) => a.order - b.order);
-        return acc;
-      },
-      {} as Record<
+      (acc: Record<
         number,
         {
           id: number;
@@ -159,7 +156,28 @@ export const pokemonRepository = {
           entryNumber: number;
           forms: { id: number; nameJa: string; types: string[]; sprite: string; order: number }[];
         }
-      >,
+      >, entry) => {
+        const pokeId = entry.form.pokemon_id;
+        if (!acc[pokeId]) {
+          acc[pokeId] = {
+            id: pokeId,
+            nameJa: entry.form.pokemon.name_ja,
+            nameEn: entry.form.pokemon.name_en,
+            entryNumber: entry.entry_number, // 最初のエントリ番号を代表値とする
+            forms: [],
+          };
+        }
+        acc[pokeId].forms.push({
+          id: entry.form.id,
+          nameJa: entry.form.form_name,
+          types: entry.form.typeEntries.map((te: { type: { slug: string } }) => te.type.slug),
+          sprite: entry.form.sprite,
+          order: entry.form.order,
+        });
+        acc[pokeId].forms.sort((a, b) => a.order - b.order);
+        return acc;
+      },
+      {},
     );
 
     // orderを返却前に除去

@@ -28,13 +28,13 @@ export async function PokemonGridContainer({
   );
 
   return (
-    <div className="grid gap-2 mb-10 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+    <div className="mb-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       {rawPokemons.map((pokemon) => (
         <Card
           key={pokemon.id}
-          className="gap-4 py-4 rounded-xl border-t border-r border-b border-l border-t-white/70 border-r-white/35 border-b-white/35 border-l-white/70 bg-white/40 shadow-none backdrop-blur-md dark:border-t-white/15 dark:border-r-white/7.5 dark:border-b-white/7.5 dark:border-l-white/15 dark:bg-white/5"
+          className="gap-4 rounded-xl border-t border-r border-b border-l border-t-white/70 border-r-white/35 border-b-white/35 border-l-white/70 bg-white/40 py-4 shadow-none backdrop-blur-md dark:border-t-white/15 dark:border-r-white/7.5 dark:border-b-white/7.5 dark:border-l-white/15 dark:bg-white/5"
         >
-          <CardHeader className="px-4 gap-1">
+          <CardHeader className="gap-1 px-4">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm">{pokemon.nameJa}</CardTitle>
               <span className="text-muted-foreground text-sm">#{pokemon.entryNumber}</span>

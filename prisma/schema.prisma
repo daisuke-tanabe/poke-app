@@ -19,10 +19,10 @@ model Pokemon {
   name_ja     String
   name_kana   String
   name_en     String
-  forms       PokemonForm[]
+  forms       Form[]
 }
 
-model PokemonForm {
+model Form {
   id          Int           @id @default(autoincrement())
   pokemon_id  Int
   name_ja     String
@@ -57,12 +57,12 @@ model Pokedex {
 model PokedexEntry {
   id              Int           @id @default(autoincrement())
   pokedex_id      Int
-  pokemon_form_id Int
+  form_id         Int
   entry_number    Int
   pokedex         Pokedex       @relation(fields: [pokedex_id], references: [id], onDelete: Cascade)
-  pokemonForm     PokemonForm   @relation(fields: [pokemon_form_id], references: [id], onDelete: Cascade)
+  form            Form          @relation(fields: [form_id], references: [id], onDelete: Cascade)
   typeEntries     TypeEntry[]
-  @@unique([pokedex_id, entry_number, pokemon_form_id])
+  @@unique([pokedex_id, entry_number, form_id])
 }
 
 model Type {
@@ -77,9 +77,9 @@ model TypeEntry {
   id               Int          @id @default(autoincrement())
   pokedex_entry_id Int
   type_id          Int
-  pokemon_form_id  Int
+  form_id          Int
   type             Type         @relation(fields: [type_id], references: [id], onDelete: Cascade)
   pokedexEntry     PokedexEntry @relation(fields: [pokedex_entry_id], references: [id], onDelete: Cascade)
-  pokemonForm      PokemonForm  @relation(fields: [pokemon_form_id], references: [id], onDelete: Cascade)
+  form             Form         @relation(fields: [form_id], references: [id], onDelete: Cascade)
   @@unique([pokedex_entry_id, type_id])
 }
