@@ -5,7 +5,7 @@ async function main() {
   // 既存データを全削除（マスタは削除しない）
   await prisma.typeEntry.deleteMany();
   await prisma.pokedexEntry.deleteMany();
-  await prisma.pokemonForm.deleteMany();
+  await prisma.form.deleteMany();
   await prisma.pokemon.deleteMany();
   console.log('全データ削除完了');
 
@@ -96,7 +96,6 @@ async function main() {
         {
           id: 1,
           name_ja: '通常',
-          form_name: '通常',
           name_en: 'Normal',
           order: 1,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1.png',
@@ -105,7 +104,6 @@ async function main() {
         {
           id: 2,
           name_ja: '色違い',
-          form_name: '色違い',
           name_en: 'Shiny',
           order: 2,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1-s.png',
@@ -123,7 +121,6 @@ async function main() {
         {
           id: 3,
           name_ja: '通常',
-          form_name: '通常',
           name_en: 'Normal',
           order: 1,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2.png',
@@ -132,7 +129,6 @@ async function main() {
         {
           id: 4,
           name_ja: '色違い',
-          form_name: '色違い',
           name_en: 'Shiny',
           order: 2,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2-s.png',
@@ -150,7 +146,6 @@ async function main() {
         {
           id: 5,
           name_ja: '通常',
-          form_name: '通常',
           name_en: 'Normal',
           order: 1,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3.png',
@@ -159,7 +154,6 @@ async function main() {
         {
           id: 6,
           name_ja: '色違い',
-          form_name: '色違い',
           name_en: 'Shiny',
           order: 2,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-s.png',
@@ -168,7 +162,6 @@ async function main() {
         {
           id: 7,
           name_ja: 'メガシンカ',
-          form_name: 'メガシンカ',
           name_en: 'Mega',
           order: 3,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-m.png',
@@ -177,7 +170,6 @@ async function main() {
         {
           id: 8,
           name_ja: '色違いメガシンカ',
-          form_name: '色違いメガシンカ',
           name_en: 'Shiny Mega',
           order: 4,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-m-s.png',
@@ -195,7 +187,6 @@ async function main() {
         {
           id: 9,
           name_ja: '通常',
-          form_name: '通常',
           name_en: 'Normal',
           order: 1,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37.png',
@@ -204,7 +195,6 @@ async function main() {
         {
           id: 10,
           name_ja: '色違い',
-          form_name: '色違い',
           name_en: 'Shiny',
           order: 2,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-s.png',
@@ -213,7 +203,6 @@ async function main() {
         {
           id: 11,
           name_ja: 'アローラ',
-          form_name: 'アローラ',
           name_en: 'Alola',
           order: 3,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola.png',
@@ -222,7 +211,6 @@ async function main() {
         {
           id: 12,
           name_ja: '色違いアローラ',
-          form_name: '色違いアローラ',
           name_en: 'Shiny Alola',
           order: 4,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola-s.png',
@@ -244,7 +232,6 @@ async function main() {
         {
           id: 9,
           name_ja: '通常',
-          form_name: '通常',
           name_en: 'Normal',
           order: 1,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37.png',
@@ -253,7 +240,6 @@ async function main() {
         {
           id: 10,
           name_ja: '色違い',
-          form_name: '色違い',
           name_en: 'Shiny',
           order: 2,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-s.png',
@@ -275,7 +261,6 @@ async function main() {
         {
           id: 1,
           name_ja: '通常',
-          form_name: '通常',
           name_en: 'Normal',
           order: 1,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1.png',
@@ -284,7 +269,6 @@ async function main() {
         {
           id: 2,
           name_ja: '色違い',
-          form_name: '色違い',
           name_en: 'Shiny',
           order: 2,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1-s.png',
@@ -302,7 +286,6 @@ async function main() {
         {
           id: 3,
           name_ja: '通常',
-          form_name: '通常',
           name_en: 'Normal',
           order: 1,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2.png',
@@ -311,7 +294,6 @@ async function main() {
         {
           id: 4,
           name_ja: '色違い',
-          form_name: '色違い',
           name_en: 'Shiny',
           order: 2,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2-s.png',
@@ -329,7 +311,6 @@ async function main() {
         {
           id: 5,
           name_ja: '通常',
-          form_name: '通常',
           name_en: 'Normal',
           order: 1,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3.png',
@@ -338,7 +319,6 @@ async function main() {
         {
           id: 6,
           name_ja: '色違い',
-          form_name: '色違い',
           name_en: 'Shiny',
           order: 2,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-s.png',
@@ -356,7 +336,6 @@ async function main() {
         {
           id: 11,
           name_ja: 'アローラ',
-          form_name: 'アローラ',
           name_en: 'Alola',
           order: 3,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola.png',
@@ -365,7 +344,6 @@ async function main() {
         {
           id: 12,
           name_ja: '色違いアローラ',
-          form_name: '色違いアローラ',
           name_en: 'Shiny Alola',
           order: 4,
           sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola-s.png',
@@ -401,19 +379,19 @@ async function main() {
     data: allPokemons.map((p) => ({ id: p.id, name_ja: p.name_ja, name_kana: p.name_kana, name_en: p.name_en })),
   });
   // typesを除外してフォーム投入
-  await prisma.pokemonForm.createMany({ data: allForms.map(({ types, ...rest }) => rest) });
+  await prisma.form.createMany({ data: allForms.map(({ types, ...rest }) => rest) });
   console.log('pokemon・form投入完了');
 
   // 図鑑エントリ投入
   const pokedexEntries = [
     ...nationalPokemons
-      .map((p) => p.forms.map((f) => ({ pokedex_id: 1, entry_number: p.entry_number, pokemon_form_id: f.id })))
+      .map((p) => p.forms.map((f) => ({ pokedex_id: 1, entry_number: p.entry_number, form_id: f.id })))
       .flat(),
     ...kitakamiPokemons
-      .map((p) => p.forms.map((f) => ({ pokedex_id: 101, entry_number: p.entry_number, pokemon_form_id: f.id })))
+      .map((p) => p.forms.map((f) => ({ pokedex_id: 101, entry_number: p.entry_number, form_id: f.id })))
       .flat(),
     ...blueberryPokemons
-      .map((p) => p.forms.map((f) => ({ pokedex_id: 102, entry_number: p.entry_number, pokemon_form_id: f.id })))
+      .map((p) => p.forms.map((f) => ({ pokedex_id: 102, entry_number: p.entry_number, form_id: f.id })))
       .flat(),
   ];
   await prisma.pokedexEntry.createMany({ data: pokedexEntries });
@@ -425,7 +403,7 @@ async function main() {
     for (const f of p.forms) {
       const entry = allPokedexEntries.find(
         (e) =>
-          e.pokemon_form_id === f.id &&
+          e.form_id === f.id &&
           ((e.pokedex_id === 1 && nationalPokemons.some((np) => np.id === p.id)) ||
             (e.pokedex_id === 101 && kitakamiPokemons.some((kp) => kp.id === p.id)) ||
             (e.pokedex_id === 102 && blueberryPokemons.some((bp) => bp.id === p.id))),
@@ -435,7 +413,7 @@ async function main() {
           typeEntryData.push({
             pokedex_entry_id: entry.id,
             type_id: typeSlugToId[t as keyof typeof typeSlugToId],
-            pokemon_form_id: f.id,
+            form_id: f.id,
           });
         }
       }

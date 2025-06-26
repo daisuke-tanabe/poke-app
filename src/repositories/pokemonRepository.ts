@@ -82,6 +82,7 @@ export const pokemonRepository = {
       forms: {
         id: number;
         nameJa: string;
+        nameEn: string;
         types: string[];
         sprite: string;
       }[];
@@ -132,7 +133,8 @@ export const pokemonRepository = {
       form: {
         id: number;
         pokemon_id: number;
-        form_name: string;
+        name_ja: string;
+        name_en: string;
         sprite: string;
         order: number;
         pokemon: {
@@ -167,7 +169,8 @@ export const pokemonRepository = {
         }
         acc[pokeId].forms.push({
           id: entry.form.id,
-          nameJa: entry.form.form_name,
+          nameJa: entry.form.name_ja,
+          nameEn: entry.form.name_en,
           types: entry.form.typeEntries.map((te: { type: { slug: string } }) => te.type.slug),
           sprite: entry.form.sprite,
           order: entry.form.order,
