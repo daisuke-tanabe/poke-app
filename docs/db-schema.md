@@ -3,17 +3,32 @@
 ## pokemonsテーブル
 
 - ポケモンの基本情報を管理するテーブル
-- 各ポケモンは複数の図鑑・タイプに所属可能
-- 身長・体重はdouble precision型で小数点第1位までの実数値
+- 各ポケモンは複数のフォーム（Form）を持つ
 
-| カラム    | 型                          | 説明                                          |
-| --------- | --------------------------- | --------------------------------------------- |
-| id        | SERIAL                      | ポケモンのID、オートインクリメント、主キー    |
-| name_ja   | text [NOT NULL]             | ポケモンの日本語名                            |
-| name_kana | text [NOT NULL]             | ポケモンのローマ字名                          |
-| name_en   | text [NOT NULL]             | ポケモンの英語名                              |
-| height    | double precision [NOT NULL] | ポケモンの身長、小数点第1位までの実数値、必須 |
-| weight    | double precision [NOT NULL] | ポケモンの体重、小数点第1位までの実数値、必須 |
+| カラム    | 型              | 説明                                       |
+| --------- | --------------- | ------------------------------------------ |
+| id        | SERIAL          | ポケモンのID、オートインクリメント、主キー |
+| name_ja   | text [NOT NULL] | ポケモンの日本語名                         |
+| name_kana | text [NOT NULL] | ポケモンのローマ字名                       |
+| name_en   | text [NOT NULL] | ポケモンの英語名                           |
+
+---
+
+## formsテーブル（フォーム情報）
+
+- 各ポケモンの「通常」「色違い」「メガシンカ」などのバリエーションを管理するテーブル
+- 各フォームは画像URL（sprite）や表示順（order）を持つ
+- 1つのポケモンに複数のフォームが存在可能
+- (pokemon_id, order) の組み合わせにUNIQUE制約
+
+| カラム      | 型                 | 説明                                         |
+| ----------- | ------------------ | -------------------------------------------- |
+| id          | SERIAL             | フォームID、主キー                           |
+| pokemon_id  | integer [NOT NULL] | pokemonsテーブルのidを参照、外部キー         |
+| name_ja     | text [NOT NULL]    | フォームの日本語名（例: 通常、色違い等）     |
+| name_en     | text [NOT NULL]    | フォームの英語名                             |
+| sprite      | text [NOT NULL]    | フォーム画像のURL                            |
+| order       | integer [NOT NULL] | ポケモン内でのフォーム表示順                 |
 
 ---
 
@@ -91,16 +106,16 @@
 
 ## pokedex_entriesテーブル
 
-- ポケモンと図鑑（pokedex）の所属関係を管理する中間テーブル
-- 各エントリは必ずポケモン・図鑑の両方に紐づく（外部キーはNOT NULL）
+- ポケモンの「フォーム」単位で図鑑（pokedex）への所属関係を管理する中間テーブル
+- 各エントリは必ずフォーム（form_id）・図鑑（pokedex_id）の両方に紐づく（外部キーはNOT NULL）
 - 主キーはid（SERIAL, オートインクリメント）
-- (pokedex_id, entry_number) の組み合わせにUNIQUE制約を付与し、同じ図鑑内でentry_numberが重複しないようにする
+- (pokedex_id, entry_number, form_id) の組み合わせにUNIQUE制約
 
 | カラム       | 型                 | 説明                                  |
 | ------------ | ------------------ | ------------------------------------- |
 | id           | SERIAL             | 主キー、オートインクリメント          |
-| pokemon_id   | integer [NOT NULL] | pokemonsテーブルのidを参照、外部キー  |
 | pokedex_id   | integer [NOT NULL] | pokedexesテーブルのidを参照、外部キー |
+| form_id      | integer [NOT NULL] | formsテーブルのidを参照、外部キー     |
 | entry_number | integer [NOT NULL] | 図鑑内での番号、ユニーク制約          |
 
 ---
@@ -145,10 +160,13 @@
 
 ## type_entriesテーブル
 
-ポケモンとタイプの関係、そしてタイプの順序を格納する中間テーブルです。
-主キーは pokemon_id と type_id をまとめた複合キーです。
+- フォーム単位でタイプの関係・順序を格納する中間テーブル
+- 主キーは (pokedex_entry_id, type_id) の複合キー
+- 各エントリは必ずフォーム（form_id）・図鑑エントリ（pokedex_entry_id）・タイプ（type_id）に紐づく
 
-| カラム     | 型                 | 説明                                               |
-| ---------- | ------------------ | -------------------------------------------------- |
-| pokemon_id | integer [NOT NULL] | pokemonsテーブルのidを参照、外部キー（複合主キー） |
-| type_id    | integer [NOT NULL] | typesテーブルのidを参照、外部キー（複合主キー）    |
+| カラム            | 型                 | 説明                                               |
+| ----------------- | ------------------ | -------------------------------------------------- |
+| id                | SERIAL             | 主キー、オートインクリメント                       |
+| pokedex_entry_id  | integer [NOT NULL] | pokedex_entriesテーブルのidを参照、外部キー        |
+| type_id           | integer [NOT NULL] | typesテーブルのidを参照、外部キー                  |
+| form_id           | integer [NOT NULL] | formsテーブルのidを参照、外部キー                  |
