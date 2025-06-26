@@ -24,14 +24,14 @@ export default async function Home({
       <main className="container mx-auto max-w-6xl px-6">
         <PokemonGridContainer
           currentPage={parsedParams.data.page}
-          perPage={20}
+          perPage={30}
           pokemonName={parsedParams.data.name}
           pokedexSlug={parsedParams.data.pokedex}
           types={[parsedParams.data.type1, parsedParams.data.type2]}
         />
         <PokemonPaginationContainer
           currentPage={parsedParams.data.page}
-          perPage={20}
+          perPage={30}
           pokemonName={parsedParams.data.name}
           pokedexSlug={parsedParams.data.pokedex}
           types={[parsedParams.data.type1, parsedParams.data.type2]}
