@@ -24,7 +24,7 @@ pre-commit:
       run: npx eslint --fix {staged_files}
       files: git diff --name-only --cached -- '*.ts' '*.tsx' '*.js'
     prettier:
-      run: npx prettier --write $(git diff --name-only --cached -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.json')
+      run: git diff --name-only --cached -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.json' | xargs -r npx prettier --write
       include: '**/*.{js,jsx,ts,tsx,json}'
     typecheck:
       run: npx tsc --noEmit

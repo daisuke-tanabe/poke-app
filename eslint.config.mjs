@@ -142,5 +142,19 @@ export default tseslint.config({
     // https://typescript-eslint.io/rules/require-await/
     '@typescript-eslint/require-await': 'error',
   },
-  ignores: ['**/generated/**'],
+  ignores: [
+    '**/generated/**',
+    '*.md',
+    '*.yml',
+    '*.yaml',
+    '*.prisma',
+    '*.sql',
+    '*.json',
+    '.prettierignore',
+    'node_modules',
+    'dist',
+    'out',
+    'coverage',
+    '.next',
+  ],
 });
