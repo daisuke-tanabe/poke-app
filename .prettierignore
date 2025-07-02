@@ -1,3 +1,4 @@
+# 既存の除外ルールも維持
 node_modules
 .next
 out

@@ -84,7 +84,8 @@ export const pokemonRepository = {
         nameJa: string;
         nameEn: string;
         types: string[];
-        sprite: string;
+        spriteDefault: string;
+        spriteShiny: string;
       }[];
     }[];
     total: number;
@@ -128,10 +129,11 @@ export const pokemonRepository = {
             typeEntries: { include: { type: true } },
           },
         },
+        // sprite_default, sprite_shinyはformEntry直下なので追加でselect
       },
     });
 
-    // ポケモンIDごとにグループ化し、フォームをネスト
+    // ポケモンIDごとにグループ化し、フォームをネスト（camelCaseへリネーム）
     const grouped = allEntries.reduce(
       (
         acc: Record<
@@ -141,32 +143,55 @@ export const pokemonRepository = {
             nameJa: string;
             nameEn: string;
             entryNumber: number;
-            forms: { id: number; nameJa: string; nameEn: string; types: string[]; sprite: string; order: number }[];
+            forms: {
+              id: number;
+              nameJa: string;
+              nameEn: string;
+              types: string[];
+              spriteDefault: string;
+              spriteShiny: string;
+              order: number;
+            }[];
           }
         >,
         entry,
       ) => {
         const fe = entry.formEntry;
         if (!fe) return acc;
-        const pokeId = fe.pokemon_id;
-        if (!acc[pokeId]) {
-          acc[pokeId] = {
-            id: pokeId,
+        // 型定義上snake_caseのみ許容されているため、snake_caseで統一
+        const pokemonId = fe.pokemon_id;
+        if (!acc[pokemonId]) {
+          acc[pokemonId] = {
+            id: pokemonId,
             nameJa: fe.pokemon?.name_ja ?? '',
             nameEn: fe.pokemon?.name_en ?? '',
-            entryNumber: entry.entry_number, // 最初のエントリ番号を代表値とする
+            entryNumber: entry.entry_number, // snake_caseで統一
             forms: [],
           };
         }
-        acc[pokeId].forms.push({
+        // spriteDefault, spriteShiny: camelCase/snake_case両対応だが、現状snake_caseのみ
+        const spriteDefault =
+          entry.formEntry && ('spriteDefault' in entry.formEntry || 'sprite_default' in entry.formEntry)
+            ? ((entry.formEntry as { spriteDefault?: string; sprite_default?: string }).spriteDefault ??
+              (entry.formEntry as { sprite_default?: string }).sprite_default ??
+              '')
+            : '';
+        const spriteShiny =
+          entry.formEntry && ('spriteShiny' in entry.formEntry || 'sprite_shiny' in entry.formEntry)
+            ? ((entry.formEntry as { spriteShiny?: string; sprite_shiny?: string }).spriteShiny ??
+              (entry.formEntry as { sprite_shiny?: string }).sprite_shiny ??
+              '')
+            : '';
+        acc[pokemonId].forms.push({
           id: fe.id,
           nameJa: fe.form?.name_ja ?? '',
           nameEn: fe.form?.name_en ?? '',
           types: (fe.typeEntries ?? []).map((te: { type: { slug: string } }) => te.type.slug),
-          sprite: fe.sprite,
+          spriteDefault,
+          spriteShiny,
           order: fe.order,
         });
-        acc[pokeId].forms.sort((a, b) => a.order - b.order);
+        acc[pokemonId].forms.sort((a, b) => a.order - b.order);
         return acc;
       },
       {},

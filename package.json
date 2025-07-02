@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint-fix": "next lint --fix",
-    "format": "prettier --write .",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\"",
     "type-check": "tsc --noEmit",
     "seed": "tsx prisma/seed.ts",
     "prepare": "lefthook install"

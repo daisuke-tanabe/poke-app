@@ -32,18 +32,20 @@
 - 各エントリはフォーム種別（form_id）を参照
 - 1つのポケモンに複数のフォームエントリが存在可能
 
-| カラム     | 型                              | 説明                         |
-| ---------- | ------------------------------- | ---------------------------- |
-| id         | SERIAL [PK]                     | フォームエントリID           |
-| pokemon_id | integer [FK, NOT NULL, CASCADE] | 対象ポケモンID               |
-| form_id    | integer [FK, NOT NULL]          | フォーム種別ID               |
-| sprite     | text [NOT NULL]                 | フォーム画像のURL            |
-| order      | integer [NOT NULL]              | ポケモン内でのフォーム表示順 |
+| カラム         | 型                              | 説明                         |
+| -------------- | ------------------------------- | ---------------------------- |
+| id             | SERIAL [PK]                     | フォームエントリID           |
+| pokemon_id     | integer [FK, NOT NULL, CASCADE] | 対象ポケモンID               |
+| form_id        | integer [FK, NOT NULL]          | フォーム種別ID               |
+| sprite_default | text [NOT NULL]                 | 通常時のフォーム画像URL      |
+| sprite_shiny   | text [NOT NULL]                 | 色違い時のフォーム画像URL    |
+| order          | integer [NOT NULL]              | ポケモン内でのフォーム表示順 |
 
 **制約**
 
 - UNIQUE (pokemon_id, order): 同一ポケモン内でorder重複禁止
 - form_idはformテーブルを参照
+- sprite_default, sprite_shinyは必須
 
 ---
 

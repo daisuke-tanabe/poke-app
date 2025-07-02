@@ -2,22 +2,19 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  // フォーム種別マスタ投入
-  const formMaster = [
-    { id: 1, name_ja: '通常', name_en: 'Normal' },
-    { id: 2, name_ja: '色違い', name_en: 'Shiny' },
-    { id: 3, name_ja: 'メガシンカ', name_en: 'Mega' },
-    { id: 4, name_ja: '色違いメガシンカ', name_en: 'Shiny Mega' },
-    { id: 5, name_ja: 'アローラ', name_en: 'Alola' },
-    { id: 6, name_ja: '色違いアローラ', name_en: 'Shiny Alola' },
-  ];
-  await prisma.form.createMany({ data: formMaster, skipDuplicates: true });
-  // 既存データを全削除（マスタは削除しない）
+  // 既存データを全削除（マスタも削除）
   await prisma.typeEntry.deleteMany();
   await prisma.pokedexEntry.deleteMany();
   await prisma.form.deleteMany();
   await prisma.pokemon.deleteMany();
-  console.log('全データ削除完了');
+  // フォーム種別マスタ再投入
+  const formMaster = [
+    { id: 1, name_ja: '通常', name_en: 'Normal' },
+    { id: 2, name_ja: 'メガシンカ', name_en: 'Mega' },
+    { id: 3, name_ja: 'アローラ', name_en: 'Alola' },
+  ];
+  await prisma.form.createMany({ data: formMaster, skipDuplicates: true });
+  console.log('全データ削除・formマスタ再投入完了');
 
   // 全リージョン
   await prisma.region.createMany({
@@ -108,15 +105,8 @@ async function main() {
           name_ja: '通常',
           name_en: 'Normal',
           order: 1,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1.png',
-          types: ['grass', 'poison'],
-        },
-        {
-          id: 2,
-          name_ja: '色違い',
-          name_en: 'Shiny',
-          order: 2,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1-s.png',
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1-s.png',
           types: ['grass', 'poison'],
         },
       ],
@@ -133,15 +123,8 @@ async function main() {
           name_ja: '通常',
           name_en: 'Normal',
           order: 1,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2.png',
-          types: ['grass', 'poison'],
-        },
-        {
-          id: 4,
-          name_ja: '色違い',
-          name_en: 'Shiny',
-          order: 2,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2-s.png',
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2-s.png',
           types: ['grass', 'poison'],
         },
       ],
@@ -158,31 +141,17 @@ async function main() {
           name_ja: '通常',
           name_en: 'Normal',
           order: 1,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3.png',
-          types: ['grass', 'poison'],
-        },
-        {
-          id: 6,
-          name_ja: '色違い',
-          name_en: 'Shiny',
-          order: 2,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-s.png',
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-s.png',
           types: ['grass', 'poison'],
         },
         {
           id: 7,
           name_ja: 'メガシンカ',
           name_en: 'Mega',
-          order: 3,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-m.png',
-          types: ['grass', 'poison'],
-        },
-        {
-          id: 8,
-          name_ja: '色違いメガシンカ',
-          name_en: 'Shiny Mega',
-          order: 4,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-m-s.png',
+          order: 2,
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-m.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-m-s.png',
           types: ['grass', 'poison'],
         },
       ],
@@ -199,31 +168,17 @@ async function main() {
           name_ja: '通常',
           name_en: 'Normal',
           order: 1,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37.png',
-          types: ['fire'],
-        },
-        {
-          id: 10,
-          name_ja: '色違い',
-          name_en: 'Shiny',
-          order: 2,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-s.png',
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-s.png',
           types: ['fire'],
         },
         {
           id: 11,
           name_ja: 'アローラ',
           name_en: 'Alola',
-          order: 3,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola.png',
-          types: ['ice'],
-        },
-        {
-          id: 12,
-          name_ja: '色違いアローラ',
-          name_en: 'Shiny Alola',
-          order: 4,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola-s.png',
+          order: 2,
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola-s.png',
           types: ['ice'],
         },
       ],
@@ -244,15 +199,8 @@ async function main() {
           name_ja: '通常',
           name_en: 'Normal',
           order: 1,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37.png',
-          types: ['fire'],
-        },
-        {
-          id: 10,
-          name_ja: '色違い',
-          name_en: 'Shiny',
-          order: 2,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-s.png',
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-s.png',
           types: ['fire'],
         },
       ],
@@ -273,15 +221,8 @@ async function main() {
           name_ja: '通常',
           name_en: 'Normal',
           order: 1,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1.png',
-          types: ['grass', 'poison'],
-        },
-        {
-          id: 2,
-          name_ja: '色違い',
-          name_en: 'Shiny',
-          order: 2,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1-s.png',
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/1-s.png',
           types: ['grass', 'poison'],
         },
       ],
@@ -298,15 +239,8 @@ async function main() {
           name_ja: '通常',
           name_en: 'Normal',
           order: 1,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2.png',
-          types: ['grass', 'poison'],
-        },
-        {
-          id: 4,
-          name_ja: '色違い',
-          name_en: 'Shiny',
-          order: 2,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2-s.png',
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/2-s.png',
           types: ['grass', 'poison'],
         },
       ],
@@ -323,15 +257,8 @@ async function main() {
           name_ja: '通常',
           name_en: 'Normal',
           order: 1,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3.png',
-          types: ['grass', 'poison'],
-        },
-        {
-          id: 6,
-          name_ja: '色違い',
-          name_en: 'Shiny',
-          order: 2,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-s.png',
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/3-s.png',
           types: ['grass', 'poison'],
         },
       ],
@@ -348,15 +275,8 @@ async function main() {
           name_ja: 'アローラ',
           name_en: 'Alola',
           order: 3,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola.png',
-          types: ['ice'],
-        },
-        {
-          id: 12,
-          name_ja: '色違いアローラ',
-          name_en: 'Shiny Alola',
-          order: 4,
-          sprite: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola-s.png',
+          sprite_default: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola.png',
+          sprite_shiny: 'http://127.0.0.1:54321/storage/v1/object/public/pokemon/sprites/37-alola-s.png',
           types: ['ice'],
         },
       ],
@@ -380,41 +300,82 @@ async function main() {
   }
 
   const allFormEntries = [
-    ...nationalPokemons.flatMap((p) =>
-      p.forms.map((f) => ({
-        pokemon_id: p.id,
-        form_id: formNameToId[f.name_ja] ?? formNameToId[f.name_en],
-        sprite: f.sprite,
-        order: f.order,
-        id: f.id,
-      })),
-    ),
+    ...nationalPokemons
+      .flatMap((p) =>
+        p.forms.map((f) => {
+          // form_idはformMasterのname_ja/name_enのみ許容
+          let formKey = f.name_ja;
+          if (!formNameToId[formKey]) formKey = f.name_en;
+          if (!formNameToId[formKey]) {
+            console.warn('nationalPokemons: invalid formId', { p, f, formKey });
+            return null;
+          }
+          const formId = formNameToId[formKey];
+          console.log('nationalPokemons: resolved formId', { p_id: p.id, formKey, formId });
+          return {
+            pokemon_id: p.id,
+            form_id: formId,
+            sprite_default: f.sprite_default,
+            sprite_shiny: f.sprite_shiny,
+            order: f.order,
+          };
+        }),
+      )
+      .filter(Boolean)
+      .map((f) => f!),
     ...kitakamiPokemons
       .flatMap((p) =>
-        p.forms.map((f) => ({
-          pokemon_id: p.id,
-          form_id: formNameToId[f.name_ja] ?? formNameToId[f.name_en],
-          sprite: f.sprite,
-          order: f.order,
-          id: f.id,
-        })),
-      )
-      .filter((f) => !nationalPokemons.some((np) => np.forms.some((nf) => nf.id === f.id))),
-    ...blueberryPokemons
-      .flatMap((p) =>
-        p.forms.map((f) => ({
-          pokemon_id: p.id,
-          form_id: formNameToId[f.name_ja] ?? formNameToId[f.name_en],
-          sprite: f.sprite,
-          order: f.order,
-          id: f.id,
-        })),
+        p.forms.map((f) => {
+          let formKey = f.name_ja;
+          if (!formNameToId[formKey]) formKey = f.name_en;
+          if (!formNameToId[formKey]) {
+            console.warn('kitakamiPokemons: invalid formId', { p, f, formKey });
+            return null;
+          }
+          const formId = formNameToId[formKey];
+          console.log('kitakamiPokemons: resolved formId', { p_id: p.id, formKey, formId });
+          return {
+            pokemon_id: p.id,
+            form_id: formId,
+            sprite_default: f.sprite_default ?? '',
+            sprite_shiny: f.sprite_shiny ?? '',
+            order: f.order,
+          };
+        }),
       )
       .filter(
         (f) =>
-          !nationalPokemons.some((np) => np.forms.some((nf) => nf.id === f.id)) &&
-          !kitakamiPokemons.some((kp) => kp.forms.some((kf) => kf.id === f.id)),
-      ),
+          Boolean(f) &&
+          !nationalPokemons.some((np) => np.id === f!.pokemon_id && np.forms.some((nf) => nf.order === f!.order)),
+      )
+      .map((f) => f!),
+    ...blueberryPokemons
+      .flatMap((p) =>
+        p.forms.map((f) => {
+          let formKey = f.name_ja;
+          if (!formNameToId[formKey]) formKey = f.name_en;
+          if (!formNameToId[formKey]) {
+            console.warn('blueberryPokemons: invalid formId', { p, f, formKey });
+            return null;
+          }
+          const formId = formNameToId[formKey];
+          console.log('blueberryPokemons: resolved formId', { p_id: p.id, formKey, formId });
+          return {
+            pokemon_id: p.id,
+            form_id: formId,
+            sprite_default: f.sprite_default ?? '',
+            sprite_shiny: f.sprite_shiny ?? '',
+            order: f.order,
+          };
+        }),
+      )
+      .filter(
+        (f) =>
+          Boolean(f) &&
+          !nationalPokemons.some((np) => np.id === f!.pokemon_id && np.forms.some((nf) => nf.order === f!.order)) &&
+          !kitakamiPokemons.some((kp) => kp.id === f!.pokemon_id && kp.forms.some((kf) => kf.order === f!.order)),
+      )
+      .map((f) => f!),
   ];
   await prisma.pokemon.createMany({
     data: allPokemons.map((p) => ({ id: p.id, name_ja: p.name_ja, name_kana: p.name_kana, name_en: p.name_en })),
@@ -422,38 +383,35 @@ async function main() {
   await prisma.formEntry.createMany({ data: allFormEntries });
   console.log('pokemon・form_entries投入完了');
 
-  // 図鑑エントリ投入
-  const pokedexEntries = [
-    ...nationalPokemons
-      .map((p) =>
-        p.forms.map((f) => ({
-          pokedex_id: 1,
+  // formEntry投入後、DBから全formEntryを取得し、pokemon_id, form_id, orderでマッピング
+  const dbFormEntries = await prisma.formEntry.findMany();
+  // pokedexEntries投入用: 各formsの(pokemon_id, form_id, order)→form_entry_idを解決
+  const pokedexEntries: { pokedex_id: number; entry_number: number; form_entry_id: number }[] = [];
+  for (const group of [
+    { src: nationalPokemons, pokedexId: 1 },
+    { src: kitakamiPokemons, pokedexId: 101 },
+    { src: blueberryPokemons, pokedexId: 102 },
+  ]) {
+    for (const p of group.src) {
+      for (const f of p.forms) {
+        // formIdを再計算
+        let formKey = f.name_ja;
+        if (!formNameToId[formKey]) formKey = f.name_en;
+        const formId = formNameToId[formKey];
+        const entry = dbFormEntries.find((e) => e.pokemon_id === p.id && e.form_id === formId && e.order === f.order);
+        if (!entry) {
+          console.warn('pokedexEntry: formEntry not found', { p_id: p.id, formId, order: f.order });
+          continue;
+        }
+        pokedexEntries.push({
+          pokedex_id: group.pokedexId,
           entry_number: p.entry_number,
-          form_entry_id: f.id,
-        })),
-      )
-      .flat(),
-    ...kitakamiPokemons
-      .map((p) =>
-        p.forms.map((f) => ({
-          pokedex_id: 101,
-          entry_number: p.entry_number,
-          form_entry_id: f.id,
-        })),
-      )
-      .flat(),
-    ...blueberryPokemons
-      .map((p) =>
-        p.forms.map((f) => ({
-          pokedex_id: 102,
-          entry_number: p.entry_number,
-          form_entry_id: f.id,
-        })),
-      )
-      .flat(),
-  ];
+          form_entry_id: entry.id,
+        });
+      }
+    }
+  }
   await prisma.pokedexEntry.createMany({ data: pokedexEntries });
-
   // タイプエントリ投入
   const allPokedexEntries = await prisma.pokedexEntry.findMany();
   const typeEntryData = [];

@@ -46,7 +46,8 @@ CREATE TABLE "FormEntry" (
     "id" SERIAL PRIMARY KEY,
     "pokemon_id" INTEGER NOT NULL,
     "form_id" INTEGER NOT NULL,
-    "sprite" TEXT NOT NULL,
+    "sprite_default" TEXT NOT NULL,
+    "sprite_shiny" TEXT NOT NULL,
     "order" INTEGER NOT NULL
 );
 
