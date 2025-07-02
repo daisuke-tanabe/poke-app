@@ -65,6 +65,17 @@
 - 検索条件が全国図鑑の場合も、地方図鑑エントリを除外せず全て含めて返すこと。
 - 各図鑑エントリには図鑑名（日本語名）、図鑑番号、slugが含まれること。
 
+
+## 4.1 スプライト画像命名規則
+
+- 画像ファイル名は以下のルールで統一すること：
+  - `<ポケモンの英語名>[optional-フォームの英語名][optional-shiny].png`
+    - 例: `bulbasaur.png`, `vulpix-alola.png`, `vulpix-alola-shiny.png`, `venusaur-mega-shiny.png`
+  - 英語名・フォーム名はすべて小文字、区切りはハイフン（-）
+  - shinyは色違いの場合のみ末尾に`-shiny`を付与
+  - 拡張子は必ず`.png`
+  - 配置先は `public/pokemons/` 配下とする
+
 ## 5. 非機能要件
 
 - 対応ブラウザ：Google Chrome、Edge、Safari / iOS Safari、Android（直前のメジャーバージョン2つ前まで保証）
