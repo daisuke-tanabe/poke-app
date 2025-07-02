@@ -30,5 +30,6 @@ BREAKING CHANGE: Formモデルのフィールド構成を変更
 ```
 
 ## 参考
+
 - Conventional Commits 1.0.0: https://www.conventionalcommits.org/ja/v1.0.0/
 - 詳細は docs/commit-message-rules.md を参照

@@ -3,34 +3,47 @@
 ## pokemonsテーブル
 
 - ポケモンの基本情報を管理するテーブル
-- 各ポケモンは複数のフォーム（Form）を持つ
+- 各ポケモンは複数のフォームエントリ（form_entries）を持つ
 
-| カラム    | 型                    | 説明                   |
-| --------- | --------------------- | ---------------------- |
-| id        | SERIAL [PK]           | ポケモンのID           |
-| name_ja   | text [NOT NULL]       | ポケモンの日本語名     |
-| name_kana | text [NOT NULL]       | ポケモンのローマ字名   |
-| name_en   | text [NOT NULL]       | ポケモンの英語名       |
+| カラム    | 型              | 説明                 |
+| --------- | --------------- | -------------------- |
+| id        | SERIAL [PK]     | ポケモンのID         |
+| name_ja   | text [NOT NULL] | ポケモンの日本語名   |
+| name_kana | text [NOT NULL] | ポケモンのローマ字名 |
+| name_en   | text [NOT NULL] | ポケモンの英語名     |
 
 ---
 
-## formsテーブル（フォーム情報）
+## formテーブル（フォーム種別マスタ）
 
-- 各ポケモンの「通常」「色違い」「メガシンカ」などのバリエーションを管理するテーブル
-- 各フォームは画像URL（sprite）や表示順（order）を持つ
-- 1つのポケモンに複数のフォームが存在可能
+- 「通常」「色違い」「メガシンカ」などフォーム種別のマスタテーブル
 
-| カラム      | 型                                   | 説明                         |
-| ----------- | ------------------------------------ | ---------------------------- |
-| id          | SERIAL [PK]                         | フォームID                   |
-| pokemon_id  | integer [FK, NOT NULL, CASCADE]     | 対象ポケモンID               |
-| name_ja     | text [NOT NULL]                     | フォームの日本語名           |
-| name_en     | text [NOT NULL]                     | フォームの英語名             |
-| sprite      | text [NOT NULL]                     | フォーム画像のURL            |
-| order       | integer [NOT NULL]                  | ポケモン内でのフォーム表示順 |
+| カラム  | 型              | 説明                 |
+| ------- | --------------- | -------------------- |
+| id      | SERIAL [PK]     | フォーム種別ID       |
+| name_ja | text [NOT NULL] | フォーム種別日本語名 |
+| name_en | text [NOT NULL] | フォーム種別英語名   |
+
+---
+
+## form_entriesテーブル（フォーム情報・中間テーブル）
+
+- 各ポケモンの「通常」「色違い」「メガシンカ」などのバリエーションを管理する中間テーブル
+- 各エントリはフォーム種別（form_id）を参照
+- 1つのポケモンに複数のフォームエントリが存在可能
+
+| カラム     | 型                              | 説明                         |
+| ---------- | ------------------------------- | ---------------------------- |
+| id         | SERIAL [PK]                     | フォームエントリID           |
+| pokemon_id | integer [FK, NOT NULL, CASCADE] | 対象ポケモンID               |
+| form_id    | integer [FK, NOT NULL]          | フォーム種別ID               |
+| sprite     | text [NOT NULL]                 | フォーム画像のURL            |
+| order      | integer [NOT NULL]              | ポケモン内でのフォーム表示順 |
 
 **制約**
+
 - UNIQUE (pokemon_id, order): 同一ポケモン内でorder重複禁止
+- form_idはformテーブルを参照
 
 ---
 
@@ -39,12 +52,12 @@
 - 各地方（region）のマスタ情報を管理
 - 各地方は複数の図鑑（pokedex）を持つ
 
-| カラム  | 型                        | 説明            |
-| ------- | ------------------------- | --------------- |
-| id      | integer [PK]              | 地方のID        |
-| name_ja | text [NOT NULL]           | 地方の日本語名  |
-| name_en | text [NOT NULL]           | 地方の英語名    |
-| slug    | text [NOT NULL, UNIQUE]   | スラッグ        |
+| カラム  | 型                      | 説明           |
+| ------- | ----------------------- | -------------- |
+| id      | integer [PK]            | 地方のID       |
+| name_ja | text [NOT NULL]         | 地方の日本語名 |
+| name_en | text [NOT NULL]         | 地方の英語名   |
+| slug    | text [NOT NULL, UNIQUE] | スラッグ       |
 
 ### 投入データ
 
@@ -69,13 +82,13 @@
 - ポケモンがどの図鑑（pokedex）に所属するかを管理するマスタテーブル
 - 各図鑑は地方（region）に紐づく
 
-| カラム    | 型                                | 説明            |
-| --------- | --------------------------------- | --------------- |
-| id        | integer [PK]                      | 図鑑のID        |
-| region_id | integer [FK, NOT NULL, CASCADE]   | 地方ID          |
-| name_ja   | text [NOT NULL]                   | 図鑑の日本語名  |
-| name_en   | text [NOT NULL]                   | 図鑑の英語名    |
-| slug      | text [NOT NULL, UNIQUE]           | スラッグ        |
+| カラム    | 型                              | 説明           |
+| --------- | ------------------------------- | -------------- |
+| id        | integer [PK]                    | 図鑑のID       |
+| region_id | integer [FK, NOT NULL, CASCADE] | 地方ID         |
+| name_ja   | text [NOT NULL]                 | 図鑑の日本語名 |
+| name_en   | text [NOT NULL]                 | 図鑑の英語名   |
+| slug      | text [NOT NULL, UNIQUE]         | スラッグ       |
 
 ### 投入データ
 
@@ -106,17 +119,18 @@
 ## pokedex_entriesテーブル
 
 - ポケモンの「フォーム」単位で図鑑（pokedex）への所属関係を管理する中間テーブル
-- 各エントリは必ずフォーム（form_id）・図鑑（pokedex_id）の両方に紐づく（外部キーはNOT NULL）
+- 各エントリは必ずフォーム（form_entries.id）・図鑑（pokedex_id）の両方に紐づく（外部キーはNOT NULL）
 
-| カラム       | 型                                         | 説明               |
-| ------------ | ------------------------------------------ | ------------------ |
-| id           | SERIAL [PK]                               | エントリID         |
-| pokedex_id   | integer [FK, NOT NULL, CASCADE]           | 図鑑ID             |
-| form_id      | integer [FK, NOT NULL, CASCADE]           | フォームID         |
-| entry_number | integer [NOT NULL]                        | 図鑑内での番号     |
+| カラム        | 型                              | 説明               |
+| ------------- | ------------------------------- | ------------------ |
+| id            | SERIAL [PK]                     | エントリID         |
+| pokedex_id    | integer [FK, NOT NULL, CASCADE] | 図鑑ID             |
+| form_entry_id | integer [FK, NOT NULL, CASCADE] | フォームエントリID |
+| entry_number  | integer [NOT NULL]              | 図鑑内での番号     |
 
 **制約**
-- UNIQUE (pokedex_id, entry_number, form_id): 図鑑・番号・フォームの組み合わせで一意
+
+- UNIQUE (pokedex_id, entry_number, form_entry_id): 図鑑・番号・フォームエントリの組み合わせで一意
 
 ---
 
@@ -124,12 +138,12 @@
 
 - ポケモンのタイプを格納するマスタテーブル
 
-| カラム  | 型                        | 説明            |
-| ------- | ------------------------- | --------------- |
-| id      | integer [PK]              | タイプID        |
-| name_ja | text [NOT NULL]           | タイプの日本語名|
-| name_en | text [NOT NULL]           | タイプの英語名  |
-| slug    | text [NOT NULL, UNIQUE]   | スラッグ        |
+| カラム  | 型                      | 説明             |
+| ------- | ----------------------- | ---------------- |
+| id      | integer [PK]            | タイプID         |
+| name_ja | text [NOT NULL]         | タイプの日本語名 |
+| name_en | text [NOT NULL]         | タイプの英語名   |
+| slug    | text [NOT NULL, UNIQUE] | スラッグ         |
 
 ### 投入データ
 
@@ -158,14 +172,15 @@
 
 ## type_entriesテーブル
 
-- フォーム単位でタイプの関係・順序を格納する中間テーブル
+- フォームエントリ単位でタイプの関係・順序を格納する中間テーブル
 
-| カラム            | 型                                         | 説明               |
-| ----------------- | ------------------------------------------ | ------------------ |
-| id                | SERIAL [PK]                               | タイプエントリID   |
-| pokedex_entry_id  | integer [FK, NOT NULL, CASCADE]           | 図鑑エントリID     |
-| type_id           | integer [FK, NOT NULL, CASCADE]           | タイプID           |
-| form_id           | integer [FK, NOT NULL, CASCADE]           | フォームID         |
+| カラム           | 型                              | 説明               |
+| ---------------- | ------------------------------- | ------------------ |
+| id               | SERIAL [PK]                     | タイプエントリID   |
+| pokedex_entry_id | integer [FK, NOT NULL, CASCADE] | 図鑑エントリID     |
+| type_id          | integer [FK, NOT NULL, CASCADE] | タイプID           |
+| form_entry_id    | integer [FK, NOT NULL, CASCADE] | フォームエントリID |
 
 **制約**
+
 - UNIQUE (pokedex_entry_id, type_id): 図鑑エントリ・タイプの組み合わせで一意

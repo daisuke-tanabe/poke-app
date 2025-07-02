@@ -2,6 +2,16 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  // フォーム種別マスタ投入
+  const formMaster = [
+    { id: 1, name_ja: '通常', name_en: 'Normal' },
+    { id: 2, name_ja: '色違い', name_en: 'Shiny' },
+    { id: 3, name_ja: 'メガシンカ', name_en: 'Mega' },
+    { id: 4, name_ja: '色違いメガシンカ', name_en: 'Shiny Mega' },
+    { id: 5, name_ja: 'アローラ', name_en: 'Alola' },
+    { id: 6, name_ja: '色違いアローラ', name_en: 'Shiny Alola' },
+  ];
+  await prisma.form.createMany({ data: formMaster, skipDuplicates: true });
   // 既存データを全削除（マスタは削除しない）
   await prisma.typeEntry.deleteMany();
   await prisma.pokedexEntry.deleteMany();
@@ -362,13 +372,44 @@ async function main() {
       (b) => !nationalPokemons.some((n) => n.id === b.id) && !kitakamiPokemons.some((k) => k.id === b.id),
     ),
   ];
-  const allForms = [
-    ...nationalPokemons.flatMap((p) => p.forms.map((f) => ({ ...f, pokemon_id: p.id }))),
+  // form_entries投入用: name_ja/name_en→form_idマップ
+  const formNameToId: Record<string, number> = {};
+  for (const f of formMaster) {
+    formNameToId[f.name_ja] = f.id;
+    formNameToId[f.name_en] = f.id;
+  }
+
+  const allFormEntries = [
+    ...nationalPokemons.flatMap((p) =>
+      p.forms.map((f) => ({
+        pokemon_id: p.id,
+        form_id: formNameToId[f.name_ja] ?? formNameToId[f.name_en],
+        sprite: f.sprite,
+        order: f.order,
+        id: f.id,
+      })),
+    ),
     ...kitakamiPokemons
-      .flatMap((p) => p.forms.map((f) => ({ ...f, pokemon_id: p.id })))
+      .flatMap((p) =>
+        p.forms.map((f) => ({
+          pokemon_id: p.id,
+          form_id: formNameToId[f.name_ja] ?? formNameToId[f.name_en],
+          sprite: f.sprite,
+          order: f.order,
+          id: f.id,
+        })),
+      )
       .filter((f) => !nationalPokemons.some((np) => np.forms.some((nf) => nf.id === f.id))),
     ...blueberryPokemons
-      .flatMap((p) => p.forms.map((f) => ({ ...f, pokemon_id: p.id })))
+      .flatMap((p) =>
+        p.forms.map((f) => ({
+          pokemon_id: p.id,
+          form_id: formNameToId[f.name_ja] ?? formNameToId[f.name_en],
+          sprite: f.sprite,
+          order: f.order,
+          id: f.id,
+        })),
+      )
       .filter(
         (f) =>
           !nationalPokemons.some((np) => np.forms.some((nf) => nf.id === f.id)) &&
@@ -378,20 +419,37 @@ async function main() {
   await prisma.pokemon.createMany({
     data: allPokemons.map((p) => ({ id: p.id, name_ja: p.name_ja, name_kana: p.name_kana, name_en: p.name_en })),
   });
-  // typesを除外してフォーム投入
-  await prisma.form.createMany({ data: allForms.map(({ types, ...rest }) => rest) });
-  console.log('pokemon・form投入完了');
+  await prisma.formEntry.createMany({ data: allFormEntries });
+  console.log('pokemon・form_entries投入完了');
 
   // 図鑑エントリ投入
   const pokedexEntries = [
     ...nationalPokemons
-      .map((p) => p.forms.map((f) => ({ pokedex_id: 1, entry_number: p.entry_number, form_id: f.id })))
+      .map((p) =>
+        p.forms.map((f) => ({
+          pokedex_id: 1,
+          entry_number: p.entry_number,
+          form_entry_id: f.id,
+        })),
+      )
       .flat(),
     ...kitakamiPokemons
-      .map((p) => p.forms.map((f) => ({ pokedex_id: 101, entry_number: p.entry_number, form_id: f.id })))
+      .map((p) =>
+        p.forms.map((f) => ({
+          pokedex_id: 101,
+          entry_number: p.entry_number,
+          form_entry_id: f.id,
+        })),
+      )
       .flat(),
     ...blueberryPokemons
-      .map((p) => p.forms.map((f) => ({ pokedex_id: 102, entry_number: p.entry_number, form_id: f.id })))
+      .map((p) =>
+        p.forms.map((f) => ({
+          pokedex_id: 102,
+          entry_number: p.entry_number,
+          form_entry_id: f.id,
+        })),
+      )
       .flat(),
   ];
   await prisma.pokedexEntry.createMany({ data: pokedexEntries });
@@ -403,7 +461,7 @@ async function main() {
     for (const f of p.forms) {
       const entry = allPokedexEntries.find(
         (e) =>
-          e.form_id === f.id &&
+          e.form_entry_id === f.id &&
           ((e.pokedex_id === 1 && nationalPokemons.some((np) => np.id === p.id)) ||
             (e.pokedex_id === 101 && kitakamiPokemons.some((kp) => kp.id === p.id)) ||
             (e.pokedex_id === 102 && blueberryPokemons.some((bp) => bp.id === p.id))),
@@ -413,7 +471,7 @@ async function main() {
           typeEntryData.push({
             pokedex_entry_id: entry.id,
             type_id: typeSlugToId[t as keyof typeof typeSlugToId],
-            form_id: f.id,
+            form_entry_id: f.id,
           });
         }
       }
