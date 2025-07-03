@@ -18,14 +18,14 @@ export async function PokemonGridContainer({
   pokedexSlug,
   types,
 }: PokemonGridContainerProps) {
-  const { pokemons: rawPokemons } = await pokemonRepository.getPokedexEntriesWithForms(
+  const { pokemons: rawPokemons } = await pokemonRepository.searchPokedexEntriesWithForms({
     pokedexSlug,
-    currentPage,
-    perPage,
-    pokemonName,
-    types[0],
-    types[1],
-  );
+    page: currentPage,
+    pageSize: perPage,
+    name: pokemonName,
+    type1: types[0],
+    type2: types[1],
+  });
 
   return (
     <div className="mb-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">

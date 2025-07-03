@@ -19,14 +19,14 @@ export async function PokemonPaginationContainer({
   pokedexSlug,
   types,
 }: PokemonPaginationContainerProps) {
-  const { total } = await pokemonRepository.getPokedexEntriesWithForms(
+  const { total } = await pokemonRepository.searchPokedexEntriesWithForms({
     pokedexSlug,
-    currentPage,
-    perPage,
-    pokemonName,
-    types[0],
-    types[1],
-  );
+    page: currentPage,
+    pageSize: perPage,
+    name: pokemonName,
+    type1: types[0],
+    type2: types[1],
+  });
 
   return (
     <PokemonSearchPresentational
