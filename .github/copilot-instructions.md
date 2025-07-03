@@ -1,35 +1,18 @@
-# コミットメッセージルール（Conventional Commits 準拠）
+# Copilot設定
 
-このプロジェクトのコミットメッセージは、`docs/commit-message-rules.md` に従い、Conventional Commits 1.0.0 仕様を厳守してください。
+Don’t hold back. Give it your all.
 
-## 基本フォーマット
+## 要件定義書
+[requirements.md](../docs/requirements.md)の内容に従う
 
-```
-<type>[optional scope]: <description>
+## データベース設計書
+[database-design.md](../docs/database-design.md)の内容に従う
 
-[optional body]
+## コーディングガイドライン
+[coding-guidelines.md](../docs/coding-guidelines.md)の内容に従う
 
-[optional footer(s)]
-```
+## コーディングルール
+[coding-rules.md](../docs/coding-rules.md)の内容に従
 
-- type: feat, fix, docs, style, refactor, test, chore, build, ci など
-- scope: 任意。影響範囲やモジュール名などを括弧で指定
-- description: 変更内容の要約（日本語可、50文字以内推奨）
-- body: 任意。詳細な説明や背景、理由など
-- footer: 任意。BREAKING CHANGEや関連Issue等
-
-## 例
-
-```
-feat: ポケモン検索機能を追加
-fix(pokemon): フォーム名の誤表示を修正
-refactor(repo): PokemonForm→Formへのリネーム対応
-chore: Prismaクライアントを再生成
-
-BREAKING CHANGE: Formモデルのフィールド構成を変更
-```
-
-## 参考
-
-- Conventional Commits 1.0.0: https://www.conventionalcommits.org/ja/v1.0.0/
-- 詳細は docs/commit-message-rules.md を参照
+## コミットルール
+[commit-message-rules.md](../docs/commit-message-rules.md)の内容に従う
