@@ -156,11 +156,14 @@ function extractSpriteInfo(formEntry: FormEntryWithRelations): {
 function convertToFormData(formEntry: FormEntryWithRelations): PokemonFormWithOrder {
   const { spriteDefault, spriteShiny } = extractSpriteInfo(formEntry);
 
+  // タイプの重複を除去
+  const uniqueTypes = Array.from(new Set((formEntry.typeEntries ?? []).map((te) => te.type.slug)));
+
   return {
     id: formEntry.id,
     nameJa: formEntry.form?.name_ja ?? '',
     nameEn: formEntry.form?.name_en ?? '',
-    types: (formEntry.typeEntries ?? []).map((te) => te.type.slug),
+    types: uniqueTypes,
     spriteDefault,
     spriteShiny,
     order: formEntry.order,

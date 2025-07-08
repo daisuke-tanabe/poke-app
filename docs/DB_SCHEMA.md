@@ -68,7 +68,7 @@
 | 1   | 全国     | Global  | global |
 | 10  | カントー | Kanto   | kanto  |
 | 20  | ジョウト | Johto   | johto  |
-| 30  | ホウエン | Hoeen   | hoeen  |
+| 30  | ホウエン | Hoenn   | hoenn  |
 | 40  | シンオウ | Sinnoh  | sinnoh |
 | 50  | イッシュ | Unova   | unova  |
 | 60  | カロス   | Kalos   | kalos  |
@@ -99,7 +99,7 @@
 | 1   | 1         | 全国             | National      | national      |
 | 10  | 10        | カントー         | Kanto         | kanto         |
 | 20  | 20        | ジョウト         | Johto         | johto         |
-| 30  | 30        | ホウエン         | Hoeen         | hoeen         |
+| 30  | 30        | ホウエン         | Hoenn         | hoenn         |
 | 40  | 40        | シンオウ         | Sinnoh        | sinnoh        |
 | 50  | 50        | イッシュ         | Unova         | unova         |
 | 60  | 60        | カロス           | Kalos         | kalos         |
