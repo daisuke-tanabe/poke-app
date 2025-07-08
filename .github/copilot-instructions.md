@@ -3,16 +3,16 @@
 Don’t hold back. Give it your all.
 
 ## 要件定義書
-[requirements.md](../docs/requirements.md)の内容に従う
+[REQUIREMENTS.md](../docs/REQUIREMENTS.md)の内容に従う
 
 ## データベース設計書
-[database-design.md](../docs/database-design.md)の内容に従う
+[DB_SCHEMA.md](../docs/DB_SCHEMA.md)の内容に従う
 
 ## コーディングガイドライン
-[coding-guidelines.md](../docs/coding-guidelines.md)の内容に従う
+[CODING_GUIDELINES.md](../docs/CODING_GUIDELINES.md)の内容に従う
 
 ## コーディングルール
-[coding-rules.md](../docs/coding-rules.md)の内容に従
+[CODING_RULES.md](../docs/CODING_RULES.md)の内容に従う
 
 ## コミットルール
-[commit-message-rules.md](../docs/commit-message-rules.md)の内容に従う
+[COMMIT_MESSAGE_RULES.md](../docs/COMMIT_MESSAGE_RULES.md)の内容に従う
