@@ -62,17 +62,6 @@ export default function RootLayout({
                 クリーチャーズ
               </a>
               に帰属します。
-              <br />
-              スプライト画像は
-              <a
-                href="https://komori541milk.web.fc2.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                転寝（こもり）みるく
-              </a>
-              様よりご許可をいただき利用しています。
             </footer>
           </div>
         </ThemeProvider>
