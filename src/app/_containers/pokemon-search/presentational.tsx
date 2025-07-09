@@ -1,80 +1,26 @@
 'use client';
 
-import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-
 import { Button } from '@/components/button';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from '@/components/dialog';
-import { Input } from '@/components/input';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  SelectGroup,
-  SelectLabel,
-} from '@/components/select';
-import { searchParamsSchema } from '@/lib/searchParamsSchema';
+
+import { NameInput } from './components/NameInput';
+import { PokedexSelector } from './components/PokedexSelector';
+import { TypeSelector } from './components/TypeSelector';
+import { useSearchForm } from './hooks/useSearchForm';
+
+import type { PokemonType, Region } from './types';
 
 export type PokemonSearchPresentationalProps = {
   modal?: string;
-  allTypes: {
-    id: number;
-    slug: string;
-    nameJa: string;
-    nameEn: string;
-  }[];
-  allRegionsWithPokedexes: {
-    id: number;
-    nameJa: string;
-    nameEn: string;
-    pokedexes: {
-      id: number;
-      slug: string;
-      nameJa: string;
-      nameEn: string;
-    }[];
-  }[];
+  allTypes: PokemonType[];
+  allRegionsWithPokedexes: Region[];
 };
 
 export function PokemonSearchPresentational({ allRegionsWithPokedexes, allTypes }: PokemonSearchPresentationalProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // useSearchParamsでクエリパラメータを取得しzodでバリデーション
-  const paramsObj = Object.fromEntries(searchParams.entries());
-  const parsedParams = searchParamsSchema.safeParse(paramsObj);
-  const params = parsedParams.success ? parsedParams.data : searchParamsSchema.parse({});
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [slug, setSlug] = useState(params.pokedex);
-  const [name, setName] = useState(params.name);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>(
-    [params.type1, params.type2].filter((t): t is string => typeof t === 'string' && t.length > 0),
-  );
-
-  const handleTypeToggle = (typeSlug: string) => {
-    setSelectedTypes((prev) => {
-      if (prev.includes(typeSlug)) return prev.filter((t) => t !== typeSlug);
-      if (prev.length < 2) return [...prev, typeSlug];
-      return [typeSlug, ...prev.slice(0, 1)];
-    });
-  };
-
-  const handleApply = () => {
-    const [type1 = '', type2 = ''] = selectedTypes;
-    router.push(`?pokedex=${slug}&page=1&name=${encodeURIComponent(name)}&type1=${type1}&type2=${type2}`);
-    setIsOpen(false);
-  };
-
-  const handleOpenChange = () => {
-    setIsOpen((prevState) => !prevState);
-  };
+  const { state, actions } = useSearchForm();
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={state.isOpen} onOpenChange={actions.setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost">Advanced Search</Button>
       </DialogTrigger>
@@ -85,63 +31,14 @@ export function PokemonSearchPresentational({ allRegionsWithPokedexes, allTypes 
         </DialogHeader>
 
         <div className="flex flex-col gap-6 py-6">
-          {/* 図鑑 */}
-          <div>
-            <label className="mb-3 block text-sm font-semibold">図鑑</label>
-            <Select value={slug} onValueChange={setSlug}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="図鑑を選択" />
-              </SelectTrigger>
-              <SelectContent>
-                {allRegionsWithPokedexes.map((region) => (
-                  <SelectGroup key={region.id}>
-                    <SelectLabel>{region.nameJa}</SelectLabel>
-                    {region.pokedexes.map((p) => (
-                      <SelectItem key={p.slug} value={p.slug}>
-                        {p.nameJa}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <PokedexSelector value={state.slug} onChange={actions.setPokedex} regions={allRegionsWithPokedexes} />
 
-          {/* 名前 */}
-          <div>
-            <label className="mb-3 block text-sm font-semibold">名前</label>
-            <Input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="例: ピカチュウ"
-              className="w-full"
-            />
-          </div>
+          <NameInput value={state.name} onChange={actions.setName} />
 
-          {/* タイプ、2つまで複数選択可能（アイコン形式） */}
-          <div>
-            <label className="mb-3 block text-sm font-semibold">タイプ</label>
-            <div className="flex flex-wrap gap-4">
-              {allTypes.map((type) => {
-                const isSelected = selectedTypes.includes(type.slug);
-                return (
-                  <button
-                    key={type.id}
-                    type="button"
-                    onClick={() => handleTypeToggle(type.slug)}
-                    aria-pressed={isSelected}
-                    className={`rounded-full ${isSelected ? 'opacty-100 scale-120' : 'opacity-30'} transition`}
-                  >
-                    <Image src={`/type-icons/${type.slug}.svg`} alt={type.nameEn} width={28} height={28} unoptimized />
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <TypeSelector selectedTypes={state.selectedTypes} onToggle={actions.toggleType} allTypes={allTypes} />
         </div>
 
-        <Button onClick={handleApply}>検索</Button>
+        <Button onClick={actions.handleApply}>検索</Button>
       </DialogContent>
     </Dialog>
   );
