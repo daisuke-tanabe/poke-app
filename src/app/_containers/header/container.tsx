@@ -1,4 +1,4 @@
-import { ThemeToggleButton } from '../../_components/ThemeToggleButton';
+import { ThemeToggleButton } from './components/ThemeToggleButton';
 
 export function HeaderContainer() {
   return (
