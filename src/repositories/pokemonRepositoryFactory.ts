@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client';
+
 import { groupEntriesByPokemon, paginateAndFormatResults } from './utils/dataTransformers';
 import { buildSearchFilters } from './utils/searchFilters';
 import { transformPokedexEntry } from './utils/typeGuards';
@@ -9,57 +11,14 @@ import type {
   SearchResult,
   SearchFilters,
   PokedexEntryWithRelations,
-  DatabaseRegion,
-  DatabasePokedex,
-  DatabaseType,
-  DatabasePokedexEntry,
   IPokemonRepository,
 } from './types';
-
-// Prismaクライアント型定義
-type PrismaRegionOperations = {
-  findMany: (args?: {
-    include?: { pokedexes?: boolean };
-    orderBy?: { id?: 'asc' | 'desc' };
-  }) => Promise<DatabaseRegion[]>;
-};
-
-type PrismaTypeOperations = {
-  findMany: (args?: { orderBy?: { id?: 'asc' | 'desc' } }) => Promise<DatabaseType[]>;
-};
-
-type PrismaPokedexOperations = {
-  findUnique: (args: { where: { slug: string } }) => Promise<DatabasePokedex | null>;
-};
-
-type PrismaPokedexEntryOperations = {
-  findMany: (args: {
-    where: Record<string, unknown>;
-    orderBy?: { entry_number?: 'asc' | 'desc' };
-    include?: {
-      formEntry?: {
-        include?: {
-          pokemon?: boolean;
-          form?: boolean;
-          typeEntries?: { include?: { type?: boolean } };
-        };
-      };
-    };
-  }) => Promise<DatabasePokedexEntry[]>;
-};
-
-type PrismaClientType = {
-  region: PrismaRegionOperations;
-  type: PrismaTypeOperations;
-  pokedex: PrismaPokedexOperations;
-  pokedexEntry: PrismaPokedexEntryOperations;
-};
 
 /**
  * Pokemon Repository Factory
  * 依存性注入でテスタビリティを向上
  */
-export function createPokemonRepository(prismaClient: PrismaClientType): IPokemonRepository {
+export function createPokemonRepository(prismaClient: PrismaClient): IPokemonRepository {
   return {
     /**
      * 地方別の図鑑リスト取得
