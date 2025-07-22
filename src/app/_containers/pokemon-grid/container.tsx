@@ -2,6 +2,9 @@ import { pokemonRepository } from '@/repositories/pokemonRepository';
 
 import { PokemonGridPresentational } from './presentational';
 
+import type { UIPokemon } from './types';
+import type { PokemonWithForms } from '@/repositories/types';
+
 export type PokemonGridContainerProps = {
   currentPage: number;
   perPage: number;
@@ -9,6 +12,19 @@ export type PokemonGridContainerProps = {
   pokedexSlug: string;
   types: [string, string];
 };
+
+function mapToUIPokemon(repositoryPokemon: PokemonWithForms): UIPokemon {
+  return {
+    id: repositoryPokemon.id,
+    nameJa: repositoryPokemon.nameJa,
+    nameEn: repositoryPokemon.nameEn,
+    entryNumber: repositoryPokemon.entryNumber,
+    forms: repositoryPokemon.forms.map((form) => ({
+      types: form.types,
+      spriteDefault: form.spriteDefault,
+    })),
+  };
+}
 
 export async function PokemonGridContainer({
   currentPage,
@@ -26,5 +42,7 @@ export async function PokemonGridContainer({
     type2: types[1],
   });
 
-  return <PokemonGridPresentational pokemons={rawPokemons} />;
+  const uiPokemons = rawPokemons.map(mapToUIPokemon);
+
+  return <PokemonGridPresentational pokemons={uiPokemons} />;
 }
