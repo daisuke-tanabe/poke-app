@@ -22,13 +22,6 @@ export type UIPokemon = {
 };
 
 /**
- * PokemonGridPresentationalコンポーネントのProps型
- */
-export type PokemonGridPresentationalProps = {
-  pokemons: UIPokemon[];
-};
-
-/**
  * PokemonCardListコンポーネントのProps型
  */
 export type PokemonCardListProps = {
