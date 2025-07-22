@@ -20,17 +20,3 @@ export type UIPokemon = {
   entryNumber: number;
   forms: UIPokemonForm[];
 };
-
-/**
- * PokemonCardListコンポーネントのProps型
- */
-export type PokemonCardListProps = {
-  pokemons: UIPokemon[];
-};
-
-/**
- * PokemonCardコンポーネントのProps型
- */
-export type PokemonCardProps = {
-  pokemon: UIPokemon;
-};
