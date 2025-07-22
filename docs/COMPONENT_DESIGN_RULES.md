@@ -41,6 +41,8 @@ src/app/_containers/[feature-name]/
 ├── components/          # 子コンポーネント群（オプション）
 │   └── ComponentName.tsx    # 必要に応じて関連コンポーネントを統合
 ├── hooks/              # カスタムフック（オプション）
+├── types/              # 共有型定義（必要時のみ）
+│   └── index.ts        # 複数コンポーネント間で共有される型のみ
 ├── container.tsx       # Container Component + Props型定義
 ├── presentational.tsx  # Presentational Component + Props型定義
 └── index.ts           # エントリーポイント（containerをre-export）
@@ -53,12 +55,26 @@ src/app/_containers/[feature-name]/
 - **Container Component**: `PokemonGridContainerProps` などの型をcontainer.tsx内に定義
 - **Presentational Component**: `PokemonGridPresentationalProps` などの型をpresentational.tsx内に定義  
 - **Child Components**: 各コンポーネントファイル内に型定義を配置
-- **共通型**: `/repositories/types` や `/types` など、既存の型定義を再利用
+- **共有UI型**: 複数コンポーネント間で共有される場合のみ `types/index.ts` に配置
+- **既存共通型**: `/repositories/types` や `/types` など、既存の型定義を再利用
 
-**typesディレクトリを作る基準**:
+**型分離の判断基準**:
+
+#### 分離すべき型（types/index.tsに配置）
 - 複数のコンポーネント間で共有される複雑なドメイン型
-- 外部に公開するAPI型定義
-- 単純なProps型は**作らない**
+- 外部に公開するAPI型定義  
+- データ変換用のUI専用型（例: `UIPokemon`, `UIPokemonForm`）
+- 同じ型を3回以上書く場合
+
+#### 分離すべきでない型（各ファイル内に定義）
+- **コンポーネントのProps型（重複することがないため）**
+- **単一のコンポーネントでのみ使用される型**
+- コンポーネント固有の状態管理型
+- 再利用されない小さな型定義
+
+**理由**: コンポーネントのProps型は同じコンポーネントを書かない限り重複せず、「型の分離は必要性が明確な場合のみ行う」という原則に反するため。
+
+**重要**: 型の分離は必要性が明確な場合のみ行う。迷った場合は同一ファイル内に定義する。
 
 ### 実装例
 
