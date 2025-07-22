@@ -5,15 +5,7 @@ import { useState } from 'react';
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/card';
 
-import type { PokemonWithForms } from '@/repositories/types';
-
-type PokemonCardListProps = {
-  pokemons: PokemonWithForms[];
-};
-
-type PokemonCardProps = {
-  pokemon: PokemonWithForms;
-};
+import type { PokemonCardListProps, PokemonCardProps } from '../types';
 
 function PokemonCard({ pokemon }: PokemonCardProps) {
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
