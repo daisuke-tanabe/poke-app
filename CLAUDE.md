@@ -4,6 +4,7 @@
 - 遠慮しないで、全力を尽くしてください。
 
 ## プロジェクト
+
 - プロジェクト概要 @README.md
 
 ## 要件定義書
@@ -19,3 +20,4 @@
 - コーディングガイドライン @/docs/CODING_GUIDELINES.md
 - コーディングルール @/docs/CODING_RULES.md
 - コミットルール @/docs/COMMIT_MESSAGE_RULES.md
+- コンポーネント設計ルール @/docs/COMPONENT_DESIGN_RULES.md
