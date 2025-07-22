@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/card';
 
 import type { PokemonWithForms } from '@/repositories/types';
 
@@ -22,25 +22,22 @@ function PokemonCard({ pokemon }: PokemonCardProps) {
 
   return (
     <Card className="gap-2 rounded-xl border-t border-r border-b border-l border-t-white/70 border-r-white/35 border-b-white/35 border-l-white/70 bg-white/40 py-4 shadow-none backdrop-blur-md dark:border-t-white/15 dark:border-r-white/7.5 dark:border-b-white/7.5 dark:border-l-white/15 dark:bg-white/5">
-      <CardHeader className="gap-1 px-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-sm">{pokemon.nameJa}</CardTitle>
-          <span className="text-muted-foreground text-sm">#{pokemon.entryNumber}</span>
-        </div>
-        <CardDescription className="text-xs">{pokemon.nameEn}</CardDescription>
+      <CardHeader className="flex items-center justify-between gap-1 px-4">
+        <CardTitle className="text-sm">{pokemon.nameJa}</CardTitle>
+        <span className="text-muted-foreground text-sm">#{pokemon.entryNumber}</span>
       </CardHeader>
-      <div className="mb-1 flex px-4">
-        <div className="flex gap-1">
-          {currentForm.types.map((type) => {
-            return (
-              <div key={type} className="flex h-5 w-5 items-center justify-center">
-                <Image src={`/type-icons/${type}.svg`} alt={type} width={20} height={20} unoptimized />
-              </div>
-            );
-          })}
-        </div>
-      </div>
       <CardContent className="px-4">
+        <div className="flex mb-4">
+          <div className="flex gap-1">
+            {currentForm.types.map((type) => {
+              return (
+                <div key={type} className="flex h-5 w-5 items-center justify-center">
+                  <Image src={`/type-icons/${type}.svg`} alt={type} width={20} height={20} unoptimized />
+                </div>
+              );
+            })}
+          </div>
+        </div>
         <div className="mb-4 flex justify-center">
           <div className="flex h-16 w-16 items-center justify-center">
             <Image
