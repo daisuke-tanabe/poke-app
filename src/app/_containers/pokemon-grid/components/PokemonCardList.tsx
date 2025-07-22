@@ -5,14 +5,20 @@ import { useState } from 'react';
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/card';
 
-import type { PokemonWithForms } from '@/repositories/types';
+import type { UIPokemon } from '../types';
 
+/**
+ * PokemonCardListコンポーネントのProps型
+ */
 type PokemonCardListProps = {
-  pokemons: PokemonWithForms[];
+  pokemons: UIPokemon[];
 };
 
+/**
+ * PokemonCardコンポーネントのProps型
+ */
 type PokemonCardProps = {
-  pokemon: PokemonWithForms;
+  pokemon: UIPokemon;
 };
 
 function PokemonCard({ pokemon }: PokemonCardProps) {
