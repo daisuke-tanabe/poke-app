@@ -3,21 +3,32 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { CardContent } from '@/components/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/card';
 
 import type { PokemonWithForms } from '@/repositories/types';
 
-type PokemonCardContentProps = {
+type PokemonCardListProps = {
+  pokemons: PokemonWithForms[];
+};
+
+type PokemonCardProps = {
   pokemon: PokemonWithForms;
 };
 
-export function PokemonCardContent({ pokemon }: PokemonCardContentProps) {
+function PokemonCard({ pokemon }: PokemonCardProps) {
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
   const currentForm = pokemon.forms[currentFormIndex];
   const hasMultipleForms = pokemon.forms.length > 1;
 
   return (
-    <>
+    <Card className="gap-2 rounded-xl border-t border-r border-b border-l border-t-white/70 border-r-white/35 border-b-white/35 border-l-white/70 bg-white/40 py-4 shadow-none backdrop-blur-md dark:border-t-white/15 dark:border-r-white/7.5 dark:border-b-white/7.5 dark:border-l-white/15 dark:bg-white/5">
+      <CardHeader className="gap-1 px-4">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm">{pokemon.nameJa}</CardTitle>
+          <span className="text-muted-foreground text-sm">#{pokemon.entryNumber}</span>
+        </div>
+        <CardDescription className="text-xs">{pokemon.nameEn}</CardDescription>
+      </CardHeader>
       <div className="mb-1 flex px-4">
         <div className="flex gap-1">
           {currentForm.types.map((type) => {
@@ -57,6 +68,16 @@ export function PokemonCardContent({ pokemon }: PokemonCardContentProps) {
           </div>
         )}
       </CardContent>
-    </>
+    </Card>
+  );
+}
+
+export function PokemonCardList({ pokemons }: PokemonCardListProps) {
+  return (
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+      {pokemons.map((pokemon) => (
+        <PokemonCard key={pokemon.id} pokemon={pokemon} />
+      ))}
+    </div>
   );
 }
