@@ -2,7 +2,11 @@
 
 import { PokemonCardList } from './components/PokemonCardList';
 
-import type { PokemonGridPresentationalProps } from './types';
+import type { UIPokemon } from './types';
+
+type PokemonGridPresentationalProps = {
+  pokemons: UIPokemon[];
+};
 
 export function PokemonGridPresentational({ pokemons }: PokemonGridPresentationalProps) {
   return (
