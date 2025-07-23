@@ -89,7 +89,7 @@
     "autoprefixer": "10.4.20",
     "eslint": "9.29.0",
     "eslint-config-next": "15.3.4",
-    "eslint-config-prettier": "10.1.5",
+    "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "2.32.0",
     "jsdom": "26.1.0",
     "lefthook": "1.11.14",
