@@ -17,13 +17,16 @@ jobs:
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       pull-requests: read
       issues: read
       id-token: write
-      actions: read # Required for Claude to read CI results on PRs
+      actions: read
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -53,10 +56,44 @@ jobs:
           allowed_tools: "Bash"
 
           # Optional: Add custom instructions for Claude to customize its behavior for your project
-          # custom_instructions: |
-          #   Follow our coding standards
-          #   Ensure all new code has tests
-          #   Use TypeScript for new files
+          custom_instructions: |
+            PRのブランチ名が'renovate/'で始まる場合は、以下の観点で依存関係の更新をレビューしてください
+
+            1. **破壊的変更の確認**
+              - メジャーバージョンアップデートがある場合、CHANGELOGやリリースノートから破壊的変更を特定
+              - APIの変更、削除されたメソッド、変更された動作を明確に指摘
+
+            2. **既存コードへの影響分析**
+              - 更新されるパッケージを使用している箇所を特定
+              - 書き直しが必要なコードがあれば具体的に指摘
+              - 型定義の変更による影響を確認
+
+            3. **機能への影響評価**
+              - 既存機能が正常に動作するかの確認
+              - 新しいバージョンで非推奨になった機能の使用有無
+              - パフォーマンスへの影響の可能性
+
+            4. **追加対応の必要性**
+              - マイグレーションガイドに従った対応が必要か
+              - 設定ファイルの更新が必要か
+              - テストの追加・修正が必要か
+
+            5. **セキュリティの観点**
+              - セキュリティ修正が含まれているか
+              - 新たなセキュリティリスクが生じないか
+
+            6. **テスト・CIの確認**
+              - 依存更新後に全テスト・ビルド・型チェック・lintが通るかCIで確認
+              - 失敗時は原因を特定し、必要な修正を指摘
+
+            7. **ドキュメント・運用手順の確認**
+              - 依存更新に伴いREADMEやセットアップ手順、開発用スクリプトの修正が必要か確認
+
+            8. **ローカル・本番環境の差異**
+              - ローカルと本番で依存バージョン差異が生じないか確認
+              - lockファイルの更新・コミット漏れがないかチェック
+
+            それ以外のPRでは通常のコードレビューを行ってください。
 
           # Optional: Custom environment variables for Claude
           # claude_env: |
