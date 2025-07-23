@@ -24,10 +24,6 @@ const setNodeEnv = (env: string | undefined) => {
   }
 };
 
-const getNodeEnv = (): string | undefined => {
-  return (process.env as { NODE_ENV?: string }).NODE_ENV;
-};
-
 // ヘルパー関数: globalThis.prisma操作
 const setGlobalPrisma = (value: unknown) => {
   (globalThis as GlobalWithPrisma).prisma = value;
