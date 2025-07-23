@@ -15,6 +15,32 @@ interface GlobalWithPrisma {
   prisma?: unknown;
 }
 
+// ヘルパー関数: NODE_ENV操作
+const setNodeEnv = (env: string | undefined) => {
+  if (env) {
+    (process.env as { NODE_ENV?: string }).NODE_ENV = env;
+  } else {
+    delete (process.env as { NODE_ENV?: string }).NODE_ENV;
+  }
+};
+
+const getNodeEnv = (): string | undefined => {
+  return (process.env as { NODE_ENV?: string }).NODE_ENV;
+};
+
+// ヘルパー関数: globalThis.prisma操作
+const setGlobalPrisma = (value: unknown) => {
+  (globalThis as GlobalWithPrisma).prisma = value;
+};
+
+const getGlobalPrisma = (): unknown => {
+  return (globalThis as GlobalWithPrisma).prisma;
+};
+
+const deleteGlobalPrisma = () => {
+  delete (globalThis as GlobalWithPrisma).prisma;
+};
+
 describe('prisma', () => {
   let originalNodeEnv: string | undefined;
   let originalGlobalThis: unknown;
@@ -24,8 +50,8 @@ describe('prisma', () => {
     originalNodeEnv = process.env.NODE_ENV;
 
     // globalThisを保存してクリーンアップ
-    originalGlobalThis = (globalThis as GlobalWithPrisma).prisma;
-    delete (globalThis as GlobalWithPrisma).prisma;
+    originalGlobalThis = getGlobalPrisma();
+    deleteGlobalPrisma();
 
     // モジュールキャッシュをクリア
     vi.resetModules();
@@ -33,22 +59,18 @@ describe('prisma', () => {
 
   afterEach(() => {
     // NODE_ENVを復元
-    if (originalNodeEnv !== undefined) {
-      (process.env as { NODE_ENV?: string }).NODE_ENV = originalNodeEnv;
-    } else {
-      delete (process.env as { NODE_ENV?: string }).NODE_ENV;
-    }
+    setNodeEnv(originalNodeEnv);
 
     // globalThisを復元
     if (originalGlobalThis !== undefined) {
-      (globalThis as GlobalWithPrisma).prisma = originalGlobalThis;
+      setGlobalPrisma(originalGlobalThis);
     } else {
-      delete (globalThis as GlobalWithPrisma).prisma;
+      deleteGlobalPrisma();
     }
   });
 
   it('should create a new PrismaClient instance when none exists', async () => {
-    (process.env as { NODE_ENV?: string }).NODE_ENV = 'development';
+    setNodeEnv('development');
 
     const { prisma } = await import('./prisma');
 
@@ -57,7 +79,7 @@ describe('prisma', () => {
   });
 
   it('should reuse existing PrismaClient instance in development', async () => {
-    (process.env as { NODE_ENV?: string }).NODE_ENV = 'development';
+    setNodeEnv('development');
 
     // 最初のインポート
     const { prisma: prisma1 } = await import('./prisma');
@@ -73,7 +95,7 @@ describe('prisma', () => {
   });
 
   it('should create new instance in production environment', async () => {
-    (process.env as { NODE_ENV?: string }).NODE_ENV = 'production';
+    setNodeEnv('production');
 
     const { prisma } = await import('./prisma');
 
@@ -82,36 +104,36 @@ describe('prisma', () => {
   });
 
   it('should set global prisma instance only in non-production environment', async () => {
-    (process.env as { NODE_ENV?: string }).NODE_ENV = 'development';
+    setNodeEnv('development');
 
     await import('./prisma');
 
-    expect((globalThis as GlobalWithPrisma).prisma).toBeDefined();
+    expect(getGlobalPrisma()).toBeDefined();
   });
 
   it('should not set global prisma instance in production', async () => {
-    (process.env as { NODE_ENV?: string }).NODE_ENV = 'production';
+    setNodeEnv('production');
 
     await import('./prisma');
 
-    expect((globalThis as GlobalWithPrisma).prisma).toBeUndefined();
+    expect(getGlobalPrisma()).toBeUndefined();
   });
 
   it('should handle test environment as non-production', async () => {
-    (process.env as { NODE_ENV?: string }).NODE_ENV = 'test';
+    setNodeEnv('test');
 
     await import('./prisma');
 
     // テスト環境では開発環境と同様にglobalに設定される
-    expect((globalThis as GlobalWithPrisma).prisma).toBeDefined();
+    expect(getGlobalPrisma()).toBeDefined();
   });
 
   it('should handle undefined NODE_ENV as non-production', async () => {
-    delete (process.env as { NODE_ENV?: string }).NODE_ENV;
+    setNodeEnv(undefined);
 
     await import('./prisma');
 
     // NODE_ENVが未定義の場合は開発環境として扱われる
-    expect((globalThis as GlobalWithPrisma).prisma).toBeDefined();
+    expect(getGlobalPrisma()).toBeDefined();
   });
 });
