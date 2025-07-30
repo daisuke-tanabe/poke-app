@@ -47,7 +47,7 @@ function PokemonCard({ pokemon }: PokemonCardProps) {
         <div className="mb-4 flex justify-center">
           <div className="flex h-16 w-16 items-center justify-center">
             <Image
-              src={`http://127.0.0.1:54321/storage/v1/object/public${currentForm.spriteDefault}`}
+              src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public${currentForm.spriteDefault}`}
               alt={pokemon.nameEn}
               width={64}
               height={64}
