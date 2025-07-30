@@ -7,10 +7,10 @@ export const searchParamsSchema = z.object({
   name: z.string().optional().default(''),
   page: z
     .string()
+    .optional()
+    .default('1')
     .transform((v) => parseInt(v, 10))
     .refine((v) => !isNaN(v) && v > 0, {
       message: 'ページ番号は1以上の整数である必要があります',
-    })
-    .optional()
-    .default('1'),
+    }),
 });
