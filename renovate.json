@@ -1,6 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>daisuke-tanabe/renovate-config"
-  ]
+  "extends": ["local>daisuke-tanabe/renovate-config"],
+  "baseBranches": ["develop"]
 }
