@@ -1,7 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
 import {
   Pagination,
   PaginationContent,
@@ -29,16 +27,10 @@ export function PokemonSearchPresentational({
   types,
   total,
 }: PokemonSearchPresentationalProps) {
-  const router = useRouter();
-
   const pageCount = Math.ceil(total / perPage);
 
   const createPageUrl = (page: number) => {
     return `?pokedex=${pokedexSlug}&page=${page}&name=${encodeURIComponent(pokemonName)}&type1=${types[0]}&type2=${types[1]}`;
-  };
-
-  const handlePageClick = (page: number) => {
-    router.push(createPageUrl(page));
   };
 
   if (pageCount <= 1) return null;
@@ -51,14 +43,7 @@ export function PokemonSearchPresentational({
       for (let i = 1; i <= pageCount; i++) {
         items.push(
           <PaginationItem key={i}>
-            <PaginationLink
-              href={createPageUrl(i)}
-              isActive={currentPage === i}
-              onClick={(e) => {
-                e.preventDefault();
-                handlePageClick(i);
-              }}
-            >
+            <PaginationLink href={createPageUrl(i)} isActive={currentPage === i}>
               {i}
             </PaginationLink>
           </PaginationItem>,
@@ -67,14 +52,7 @@ export function PokemonSearchPresentational({
     } else {
       items.push(
         <PaginationItem key={1}>
-          <PaginationLink
-            href={createPageUrl(1)}
-            isActive={currentPage === 1}
-            onClick={(e) => {
-              e.preventDefault();
-              handlePageClick(1);
-            }}
-          >
+          <PaginationLink href={createPageUrl(1)} isActive={currentPage === 1}>
             1
           </PaginationLink>
         </PaginationItem>,
@@ -94,14 +72,7 @@ export function PokemonSearchPresentational({
       for (let i = start; i <= end; i++) {
         items.push(
           <PaginationItem key={i}>
-            <PaginationLink
-              href={createPageUrl(i)}
-              isActive={currentPage === i}
-              onClick={(e) => {
-                e.preventDefault();
-                handlePageClick(i);
-              }}
-            >
+            <PaginationLink href={createPageUrl(i)} isActive={currentPage === i}>
               {i}
             </PaginationLink>
           </PaginationItem>,
@@ -119,14 +90,7 @@ export function PokemonSearchPresentational({
       if (pageCount > 1) {
         items.push(
           <PaginationItem key={pageCount}>
-            <PaginationLink
-              href={createPageUrl(pageCount)}
-              isActive={currentPage === pageCount}
-              onClick={(e) => {
-                e.preventDefault();
-                handlePageClick(pageCount);
-              }}
-            >
+            <PaginationLink href={createPageUrl(pageCount)} isActive={currentPage === pageCount}>
               {pageCount}
             </PaginationLink>
           </PaginationItem>,
@@ -142,13 +106,7 @@ export function PokemonSearchPresentational({
       <PaginationContent>
         {currentPage > 1 && (
           <PaginationItem>
-            <PaginationPrevious
-              href={createPageUrl(currentPage - 1)}
-              onClick={(e) => {
-                e.preventDefault();
-                handlePageClick(currentPage - 1);
-              }}
-            />
+            <PaginationPrevious href={createPageUrl(currentPage - 1)} />
           </PaginationItem>
         )}
 
@@ -156,13 +114,7 @@ export function PokemonSearchPresentational({
 
         {currentPage < pageCount && (
           <PaginationItem>
-            <PaginationNext
-              href={createPageUrl(currentPage + 1)}
-              onClick={(e) => {
-                e.preventDefault();
-                handlePageClick(currentPage + 1);
-              }}
-            />
+            <PaginationNext href={createPageUrl(currentPage + 1)} />
           </PaginationItem>
         )}
       </PaginationContent>
