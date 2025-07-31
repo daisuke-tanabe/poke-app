@@ -126,8 +126,8 @@ describe('searchParamsSchema', () => {
         searchParamsSchema.parse({ page: '0' });
         expect.fail('Expected error to be thrown');
       } catch (error) {
-        const zodError = error as { errors: { message: string }[] };
-        expect(zodError.errors[0].message).toBe('ページ番号は1以上の整数である必要があります');
+        const zodError = error as { issues: { message: string }[] };
+        expect(zodError.issues[0].message).toBe('ページ番号は1以上の整数である必要があります');
       }
     });
   });
