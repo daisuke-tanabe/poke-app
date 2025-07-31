@@ -110,27 +110,6 @@ export type PokedexEntryWithRelations = {
 };
 
 // データベースレコード型定義
-export type DatabaseRegion = {
-  id: number;
-  name_ja: string;
-  name_en: string;
-  pokedexes?: DatabasePokedex[];
-};
-
-export type DatabasePokedex = {
-  id: number;
-  slug: string;
-  name_ja: string;
-  name_en: string;
-};
-
-export type DatabaseType = {
-  id: number;
-  slug: string;
-  name_ja: string;
-  name_en: string;
-};
-
 export type DatabaseFormEntry = {
   id: number;
   pokemon_id: number;
@@ -141,16 +120,3 @@ export type DatabaseFormEntry = {
   form?: { name_ja: string; name_en: string } | null;
   typeEntries?: { type: { slug: string } }[];
 };
-
-export type DatabasePokedexEntry = {
-  entry_number: number;
-  formEntry: DatabaseFormEntry | null;
-};
-
-// Pokemon Repositoryのインターフェース
-export interface IPokemonRepository {
-  listRegionsWithPokedexes(): Promise<RegionWithPokedexes[]>;
-  listAllTypes(): Promise<TypeInfo[]>;
-  searchPokedexEntriesWithForms(params: SearchParams): Promise<SearchResult>;
-  findPokedexEntries(filters: SearchFilters): Promise<PokedexEntryWithRelations[]>;
-}

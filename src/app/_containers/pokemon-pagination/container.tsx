@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { pokemonRepository } from '@/repositories/pokemonRepository';
+import { searchPokedexEntriesWithForms } from '@/repositories/pokemon';
 
 import { PokemonSearchPresentational } from './presentational';
 
@@ -19,7 +19,7 @@ export async function PokemonPaginationContainer({
   pokedexSlug,
   types,
 }: PokemonPaginationContainerProps) {
-  const { total } = await pokemonRepository.searchPokedexEntriesWithForms({
+  const { total } = await searchPokedexEntriesWithForms({
     pokedexSlug,
     page: currentPage,
     pageSize: perPage,

@@ -25,7 +25,7 @@ pre-commit:
       files: git diff --name-only --cached -- '*.ts' '*.tsx' '*.js'
       stage_fixed: true
     prettier:
-      run: git diff --name-only --cached -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.json' | xargs -r npx prettier --write
+      run: git diff --name-only --cached --diff-filter=ACMR -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.json' | xargs -r npx prettier --write
       include: '**/*.{js,jsx,ts,tsx,json}'
       stage_fixed: true
     typecheck:

@@ -1,4 +1,4 @@
-import { pokemonRepository } from '@/repositories/pokemonRepository';
+import { searchPokedexEntriesWithForms } from '@/repositories/pokemon';
 
 import { PokemonGridPresentational } from './presentational';
 
@@ -33,7 +33,7 @@ export async function PokemonGridContainer({
   pokedexSlug,
   types,
 }: PokemonGridContainerProps) {
-  const { pokemons: rawPokemons } = await pokemonRepository.searchPokedexEntriesWithForms({
+  const { pokemons: rawPokemons } = await searchPokedexEntriesWithForms({
     pokedexSlug,
     page: currentPage,
     pageSize: perPage,
