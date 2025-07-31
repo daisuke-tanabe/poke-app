@@ -53,8 +53,7 @@ export function transformFormEntryData(formEntryData: unknown): DatabaseFormEntr
         .filter(isObject)
         .map((te) => {
           const type = te.type;
-          if (!isObject(type) || !isString(type.slug)) return null;
-          return { type: { slug: type.slug } };
+          return isObject(type) && isString(type.slug) ? { type: { slug: type.slug } } : null;
         })
         .filter((te): te is { type: { slug: string } } => te !== null)
     : undefined;

@@ -61,10 +61,12 @@ const findPokedexEntries = cache(
       pokedex_id: filters.pokedexId,
     };
 
+    // 名前フィルタを追加
     if (filters.nameFilter) {
-      Object.assign(whereClause, filters.nameFilter);
+      whereClause.formEntry = filters.nameFilter.formEntry;
     }
 
+    // タイプフィルタを追加
     if (filters.typeFilters.length > 0) {
       whereClause.AND = filters.typeFilters;
     }
