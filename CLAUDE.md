@@ -1,32 +1,36 @@
 # CLAUDE.md
 
-## 基本設定
+This document defines the project's rules, objectives, and progress management methods. Please proceed with the project according to the following content.
 
-- 常に日本語で会話する。
-- 遠慮しないで、全力を尽くしてください。
+## Principles
 
-## 開発ワークフロー
+- Don't hold back. Give it your all.
+- To maximize efficiency, **if you need to execute multiple independent processes, invoke those tools concurrently, not sequentially**.
+- **You must think exclusively in English**. However, you are required to **respond in Japanese**.
+- Please respond critically and without pandering to my opinions, but please don't be forceful in your criticism.
 
-原則として和田卓人（t-wada）氏が提唱するテスト駆動開発（TDD）で進めてください。
+## Development Workflow
 
-### Red Phase（テスト作成）
+In principle, proceed with Test-Driven Development (TDD) as advocated by Takuto Wada (t-wada).
 
-- 期待される入出力に基づき、まずテストを作成する。
-- 実装コードは書かず、テストのみを用意する。
-- テストを実行し、失敗を確認する。
-- テストが正しいことを確認できた段階でコミットする。
+### Red Phase (Test Creation)
 
-### Green Phase（最小実装）
+- First, create tests based on the expected input and output.
+- Do not write implementation code; only prepare the tests.
+- Run the tests and confirm that they fail.
+- Commit once you have confirmed that the tests are correct.
 
-- テストをパスさせる最小限の実装を進める。
-- 実装中はテストを変更せず、コードを修正し続ける。
-- すべてのテストが通過するまで繰り返す。
+### Green Phase (Minimal Implementation)
 
-### Refactor Phase（改善）
+- Proceed with the minimal implementation required to pass the tests.
+- Do not modify the tests during implementation; keep fixing the code.
+- Repeat until all tests pass.
 
-- テストを通したまま、コードの品質を向上させる。
-- 重複削除、命名改善、構造化を行う。
-- リファクタリング後も全テスト通過を確認。
+### Refactor Phase (Improvement)
+
+- Improve code quality while keeping all tests passing.
+- Remove duplication, improve naming, and restructure as needed.
+- After refactoring, confirm that all tests still pass.
 
 ## プロジェクト
 
