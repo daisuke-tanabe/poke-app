@@ -1,4 +1,4 @@
-import { listAllTypes, listRegionsWithPokedexes } from '@/repositories/pokemon';
+import { listAllTypes, listRegionsWithPokedexes } from '@/data/pokemon';
 
 import { PokemonSearchPresentational } from './presentational';
 

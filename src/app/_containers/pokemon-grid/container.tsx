@@ -1,9 +1,9 @@
-import { searchPokedexEntriesWithForms } from '@/repositories/pokemon';
+import { searchPokedexEntriesWithForms } from '@/data/pokemon';
 
 import { PokemonGridPresentational } from './presentational';
 
 import type { UIPokemon } from './types';
-import type { PokemonWithForms } from '@/repositories/types';
+import type { PokemonWithForms } from '@/data/types';
 
 export type PokemonGridContainerProps = {
   currentPage: number;
