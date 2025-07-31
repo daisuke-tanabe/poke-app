@@ -1,68 +1,10 @@
 import { describe, it, expect } from 'vitest';
 
-import {
-  extractSpriteInfo,
-  convertToFormData,
-  groupEntriesByPokemon,
-  paginateAndFormatResults,
-} from './dataTransformers';
+import { convertToFormData, groupEntriesByPokemon, paginateAndFormatResults } from './dataTransformers';
 
 import type { FormEntryWithRelations, PokedexEntryWithRelations, PokemonWithFormsAndOrder } from '../types';
 
 describe('dataTransformers', () => {
-  describe('extractSpriteInfo', () => {
-    it('should extract sprite information correctly', () => {
-      const formEntry: FormEntryWithRelations = {
-        id: 1,
-        pokemon_id: 25,
-        order: 1,
-        sprite_default: 'pikachu-default.png',
-        sprite_shiny: 'pikachu-shiny.png',
-      };
-
-      const result = extractSpriteInfo(formEntry);
-
-      expect(result).toEqual({
-        spriteDefault: 'pikachu-default.png',
-        spriteShiny: 'pikachu-shiny.png',
-      });
-    });
-
-    it('should handle null sprite values gracefully', () => {
-      const formEntry: FormEntryWithRelations = {
-        id: 1,
-        pokemon_id: 25,
-        order: 1,
-        sprite_default: null as unknown as string,
-        sprite_shiny: null as unknown as string,
-      };
-
-      const result = extractSpriteInfo(formEntry);
-
-      expect(result).toEqual({
-        spriteDefault: '',
-        spriteShiny: '',
-      });
-    });
-
-    it('should handle undefined sprite values gracefully', () => {
-      const formEntry: FormEntryWithRelations = {
-        id: 1,
-        pokemon_id: 25,
-        order: 1,
-        sprite_default: undefined as unknown as string,
-        sprite_shiny: undefined as unknown as string,
-      };
-
-      const result = extractSpriteInfo(formEntry);
-
-      expect(result).toEqual({
-        spriteDefault: '',
-        spriteShiny: '',
-      });
-    });
-  });
-
   describe('convertToFormData', () => {
     it('should convert form entry to form data correctly', () => {
       const formEntry: FormEntryWithRelations = {
