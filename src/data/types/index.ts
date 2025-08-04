@@ -96,6 +96,12 @@ export type FormEntryWithRelations = {
   form?: {
     name_ja: string;
     name_en: string;
+    region?: {
+      id: number;
+      name_ja: string;
+      name_en: string;
+      slug: string;
+    } | null;
   } | null;
   typeEntries?: {
     type: {
@@ -117,6 +123,15 @@ export type DatabaseFormEntry = {
   sprite_default: string;
   sprite_shiny: string;
   pokemon?: { name_ja: string; name_en: string } | null;
-  form?: { name_ja: string; name_en: string } | null;
+  form?: {
+    name_ja: string;
+    name_en: string;
+    region?: {
+      id: number;
+      name_ja: string;
+      name_en: string;
+      slug: string;
+    } | null;
+  } | null;
   typeEntries?: { type: { slug: string } }[];
 };

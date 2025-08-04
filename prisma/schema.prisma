@@ -15,7 +15,7 @@ datasource db {
 }
 
 model Pokemon {
-  id          Int           @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name_ja     String
   name_kana   String
   name_en     String
@@ -23,22 +23,26 @@ model Pokemon {
 }
 
 model Form {
-  id      Int    @id @default(autoincrement())
-  name_ja String
-  name_en String
+  id          Int         @id @default(autoincrement())
+  name_ja     String
+  name_en     String
+  region_id   Int         @default(1) // デフォルトは全国（通常フォーム）
+  region      Region      @relation(fields: [region_id], references: [id])
   formEntries FormEntry[]
 }
+
 model FormEntry {
-  id            Int     @id @default(autoincrement())
-  pokemon_id    Int
-  form_id       Int
+  id             Int            @id @default(autoincrement())
+  pokemon_id     Int
+  form_id        Int
   sprite_default String
   sprite_shiny   String
-  order         Int
-  pokemon       Pokemon @relation(fields: [pokemon_id], references: [id], onDelete: Cascade)
-  form          Form    @relation(fields: [form_id], references: [id])
+  order          Int
+  form           Form           @relation(fields: [form_id], references: [id])
+  pokemon        Pokemon        @relation(fields: [pokemon_id], references: [id], onDelete: Cascade)
   pokedexEntries PokedexEntry[]
   typeEntries    TypeEntry[]
+
   @@unique([pokemon_id, order])
 }
 
@@ -48,6 +52,7 @@ model Region {
   name_en   String
   slug      String    @unique
   pokedexes Pokedex[]
+  forms     Form[]
 }
 
 model Pokedex {
@@ -61,13 +66,14 @@ model Pokedex {
 }
 
 model PokedexEntry {
-  id              Int           @id @default(autoincrement())
-  pokedex_id      Int
-  form_entry_id   Int
-  entry_number    Int
-  pokedex         Pokedex       @relation(fields: [pokedex_id], references: [id], onDelete: Cascade)
-  formEntry       FormEntry     @relation(fields: [form_entry_id], references: [id], onDelete: Cascade)
-  typeEntries     TypeEntry[]
+  id            Int         @id @default(autoincrement())
+  pokedex_id    Int
+  form_entry_id Int
+  entry_number  Int
+  formEntry     FormEntry   @relation(fields: [form_entry_id], references: [id], onDelete: Cascade)
+  pokedex       Pokedex     @relation(fields: [pokedex_id], references: [id], onDelete: Cascade)
+  typeEntries   TypeEntry[]
+
   @@unique([pokedex_id, entry_number, form_entry_id])
 }
 
@@ -84,8 +90,9 @@ model TypeEntry {
   pokedex_entry_id Int
   type_id          Int
   form_entry_id    Int
-  type             Type         @relation(fields: [type_id], references: [id], onDelete: Cascade)
-  pokedexEntry     PokedexEntry @relation(fields: [pokedex_entry_id], references: [id], onDelete: Cascade)
   formEntry        FormEntry    @relation(fields: [form_entry_id], references: [id], onDelete: Cascade)
+  pokedexEntry     PokedexEntry @relation(fields: [pokedex_entry_id], references: [id], onDelete: Cascade)
+  type             Type         @relation(fields: [type_id], references: [id], onDelete: Cascade)
+
   @@unique([pokedex_entry_id, type_id])
 }

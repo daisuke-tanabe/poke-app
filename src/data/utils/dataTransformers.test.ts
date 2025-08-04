@@ -135,6 +135,7 @@ describe('dataTransformers', () => {
               spriteDefault: 'pikachu-default.png',
               spriteShiny: 'pikachu-shiny.png',
               order: 1,
+              regionId: undefined,
             },
           ],
         },
@@ -208,6 +209,112 @@ describe('dataTransformers', () => {
       const result = groupEntriesByPokemon([]);
 
       expect(result).toEqual({});
+    });
+
+    it('should prioritize regional forms when regionId is provided', () => {
+      const entries: PokedexEntryWithRelations[] = [
+        {
+          entry_number: 103,
+          formEntry: {
+            id: 1,
+            pokemon_id: 103,
+            order: 1,
+            sprite_default: 'exeggutor-normal.png',
+            sprite_shiny: 'exeggutor-normal-shiny.png',
+            pokemon: {
+              name_ja: 'ナッシー',
+              name_en: 'Exeggutor',
+            },
+            form: {
+              name_ja: 'ナッシー',
+              name_en: 'Exeggutor',
+              region: { id: 1, name_ja: '全国', name_en: 'Global', slug: 'global' },
+            },
+            typeEntries: [{ type: { slug: 'grass' } }, { type: { slug: 'psychic' } }],
+          },
+        },
+        {
+          entry_number: 103,
+          formEntry: {
+            id: 2,
+            pokemon_id: 103,
+            order: 2,
+            sprite_default: 'exeggutor-alola.png',
+            sprite_shiny: 'exeggutor-alola-shiny.png',
+            pokemon: {
+              name_ja: 'ナッシー',
+              name_en: 'Exeggutor',
+            },
+            form: {
+              name_ja: 'アローラのすがた',
+              name_en: 'Alolan Form',
+              region: { id: 70, name_ja: 'アローラ', name_en: 'Alola', slug: 'alola' },
+            },
+            typeEntries: [{ type: { slug: 'grass' } }, { type: { slug: 'dragon' } }],
+          },
+        },
+      ];
+
+      // アローラ地方の図鑑で検索した場合
+      const result = groupEntriesByPokemon(entries, 70);
+
+      expect(result[103].forms).toHaveLength(2);
+      // アローラフォームが先頭に来る
+      expect(result[103].forms[0].nameJa).toBe('アローラのすがた');
+      expect(result[103].forms[1].nameJa).toBe('ナッシー');
+    });
+
+    it('should maintain order when no regional forms match', () => {
+      const entries: PokedexEntryWithRelations[] = [
+        {
+          entry_number: 103,
+          formEntry: {
+            id: 1,
+            pokemon_id: 103,
+            order: 1,
+            sprite_default: 'exeggutor-normal.png',
+            sprite_shiny: 'exeggutor-normal-shiny.png',
+            pokemon: {
+              name_ja: 'ナッシー',
+              name_en: 'Exeggutor',
+            },
+            form: {
+              name_ja: 'ナッシー',
+              name_en: 'Exeggutor',
+              region: { id: 1, name_ja: '全国', name_en: 'Global', slug: 'global' },
+            },
+            typeEntries: [],
+          },
+        },
+        {
+          entry_number: 103,
+          formEntry: {
+            id: 2,
+            pokemon_id: 103,
+            order: 2,
+            sprite_default: 'exeggutor-alola.png',
+            sprite_shiny: 'exeggutor-alola-shiny.png',
+            pokemon: {
+              name_ja: 'ナッシー',
+              name_en: 'Exeggutor',
+            },
+            form: {
+              name_ja: 'アローラのすがた',
+              name_en: 'Alolan Form',
+              region: { id: 70, name_ja: 'アローラ', name_en: 'Alola', slug: 'alola' },
+            },
+            typeEntries: [],
+          },
+        },
+      ];
+
+      // カントー地方の図鑑で検索した場合（region_id = 1）
+      const result = groupEntriesByPokemon(entries, 1);
+
+      expect(result[103].forms).toHaveLength(2);
+      // 通常のorder順を維持
+      expect(result[103].forms[0].order).toBe(1);
+      expect(result[103].forms[1].order).toBe(2);
     });
   });
 

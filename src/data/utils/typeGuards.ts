@@ -45,6 +45,19 @@ export function transformFormEntryData(formEntryData: unknown): DatabaseFormEntr
     ? {
         name_ja: isString(form.name_ja) ? form.name_ja : '',
         name_en: isString(form.name_en) ? form.name_en : '',
+        region:
+          isObject(form.region) &&
+          isNumber(form.region.id) &&
+          isString(form.region.name_ja) &&
+          isString(form.region.name_en) &&
+          isString(form.region.slug)
+            ? {
+                id: form.region.id,
+                name_ja: form.region.name_ja,
+                name_en: form.region.name_en,
+                slug: form.region.slug,
+              }
+            : null,
       }
     : null;
 

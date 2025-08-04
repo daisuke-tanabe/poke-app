@@ -139,6 +139,9 @@ describe('pokemon', () => {
       expect(result).toEqual(mockResult);
       expect(mockFindUnique).toHaveBeenCalledWith({
         where: { slug: 'national' },
+        include: {
+          region: true,
+        },
       });
     });
 

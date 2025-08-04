@@ -88,6 +88,7 @@ describe('typeGuards', () => {
         form: {
           name_ja: 'ピカチュウ',
           name_en: 'Pikachu',
+          region: null,
         },
         typeEntries: [{ type: { slug: 'electric' } }],
       });

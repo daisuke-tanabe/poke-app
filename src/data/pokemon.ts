@@ -13,9 +13,11 @@ import type { SearchParams, SearchResult, PokedexEntryWithRelations, TypeInfo, R
  * 図鑑取得用のPrismaクエリ（Request Memoization対応）
  */
 const findPokedexBySlug = cache(async (slug: string) => {
-  console.log(`[Request Memoization] 図鑑を検索中: slug=${slug}`);
   return await prisma.pokedex.findUnique({
     where: { slug },
+    include: {
+      region: true,
+    },
   });
 });
 
@@ -23,7 +25,6 @@ const findPokedexBySlug = cache(async (slug: string) => {
  * 全タイプ取得用のPrismaクエリ（Request Memoization対応）
  */
 const findAllTypes = cache(async () => {
-  console.log('[Request Memoization] 全タイプを取得中');
   return await prisma.type.findMany({ orderBy: { id: 'asc' } });
 });
 
@@ -31,7 +32,6 @@ const findAllTypes = cache(async () => {
  * 全地方と図鑑取得用のPrismaクエリ（Request Memoization対応）
  */
 const findAllRegionsWithPokedexes = cache(async () => {
-  console.log('[Request Memoization] 全地方と図鑑を取得中');
   return await prisma.region.findMany({
     include: {
       pokedexes: true,
@@ -50,10 +50,6 @@ const findPokedexEntries = cache(
     type1: string | null,
     type2: string | null,
   ): Promise<PokedexEntryWithRelations[]> => {
-    console.log(
-      `[Request Memoization] 図鑑エントリを検索中: pokedexId=${pokedexId}, name=${name ?? 'null'}, type1=${type1 ?? 'null'}, type2=${type2 ?? 'null'}`,
-    );
-
     // 検索条件を構築
     const filters = buildSearchFilters(pokedexId, name ?? '', type1 ?? '', type2 ?? '');
 
@@ -78,7 +74,11 @@ const findPokedexEntries = cache(
         formEntry: {
           include: {
             pokemon: true,
-            form: true,
+            form: {
+              include: {
+                region: true,
+              },
+            },
             typeEntries: { include: { type: true } },
           },
         },
@@ -102,8 +102,8 @@ export async function searchPokedexEntriesWithForms(params: SearchParams): Promi
       // 図鑑エントリを取得（プリミティブパラメータで直接呼び出し）
       const entries = await findPokedexEntries(pokedex.id, params.name, params.type1, params.type2);
 
-      // ポケモンごとにグループ化
-      const grouped = groupEntriesByPokemon(entries);
+      // ポケモンごとにグループ化（地方IDを渡す）
+      const grouped = groupEntriesByPokemon(entries, pokedex.region?.id);
 
       // ページネーション処理
       return paginateAndFormatResults(grouped, params.page, params.pageSize);
