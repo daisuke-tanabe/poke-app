@@ -57,9 +57,31 @@ description: Analyze uncommitted files and create commits at an appropriate gran
 
 - type (required): Indicates the category of the change in the code (e.g., feat, fix, docs, style, etc.).
 - scope (optional): Defines the area of the code that was changed (e.g., core, api, ui).
-- description (required): A short phrase summarizing the change (aim for around 50 characters).
-- body (optional): Provides a more detailed description of the change if necessary.
+- description (required): **Must be written in Japanese**. A short phrase summarizing the change (aim for around 50 characters).
+- body (optional): **Must be written in Japanese**. Provides a more detailed description of the change if necessary.
 - footer (optional): Used to add additional information like "BREAKING CHANGE" or referencing issues.
+
+### Japanese Commit Message Examples
+
+```
+feat: ポケモン検索機能を追加
+
+- タイプ別フィルタリング機能を実装
+- 地方別絞り込み機能を追加
+- レスポンシブ対応のUI設計
+```
+
+```
+fix: 図鑑データの表示バグを修正
+
+キタカミ地方のポケモン順序が正しく表示されない問題を解決
+```
+
+```
+docs: APIドキュメントを更新
+
+新しいエンドポイントの仕様書を追加
+```
 
 ## Example Execution
 
