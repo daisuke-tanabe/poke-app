@@ -1,51 +1,36 @@
 # CLAUDE.md
 
-This document defines the project's rules, objectives, and progress management methods. Please proceed with the project according to the following content.
+- README @/README.md
 
-## Principles
+## 01_core
 
-- Don't hold back. Give it your all.
-- To maximize efficiency, **if you need to execute multiple independent processes, invoke those tools concurrently, not sequentially**.
-- **You must think exclusively in English**. However, you are required to **respond in Japanese**.
-- Please respond critically and without pandering to my opinions, but please don't be forceful in your criticism.
+- 基本原則 @/docs/01_core/01_principles.md
 
-## Development Workflow
+## 02_project
 
-In principle, proceed with Test-Driven Development (TDD) as advocated by Takuto Wada (t-wada).
+- 要件定義書 @/docs/02_project/01_requirement.md
+- システム設計 @/docs/02_project/02_system-design.md
+- データベース設計 @/docs/02_project/03_database-design.md
 
-### Red Phase (Test Creation)
+## 03_development
 
-- First, create tests based on the expected input and output.
-- Do not write implementation code; only prepare the tests.
-- Run the tests and confirm that they fail.
-- Commit once you have confirmed that the tests are correct.
+- コーディングガイドライン @/docs/03_development/01_coding-guidelines.md
+- コーディングルール @/docs/03_development/02_coding-rules.md
+- コンポーネント設計 @/docs/03_development/03_component-design.md
+- 開発ワークフロー @/docs/03_development/04_development-workflow.md
 
-### Green Phase (Minimal Implementation)
+## 04_references
 
-- Proceed with the minimal implementation required to pass the tests.
-- Do not modify the tests during implementation; keep fixing the code.
-- Repeat until all tests pass.
+### 01_pokedex
 
-### Refactor Phase (Improvement)
-
-- Improve code quality while keeping all tests passing.
-- Remove duplication, improve naming, and restructure as needed.
-- After refactoring, confirm that all tests still pass.
-
-## プロジェクト
-
-- プロジェクト概要 @/README.md
-
-## 要件定義書
-
-- 要件定義書 @/docs/REQUIREMENTS.md
-
-## 設計書
-
-- データベース設計書 @/docs/DB_SCHEMA.md
-
-## コーディング
-
-- コーディングガイドライン @/docs/CODING_GUIDELINES.md
-- コーディングルール @/docs/CODING_RULES.md
-- コンポーネント設計ルール @/docs/COMPONENT_DESIGN_RULES.md
+- 図鑑インデックス @/docs/04_references/01_pokedex/01_index.md
+- カントー地方 @/docs/04_references/01_pokedex/02_region-kanto.md
+- ジョウト地方 @/docs/04_references/01_pokedex/03_region-johto.md
+- ホウエン地方 @/docs/04_references/01_pokedex/04_region-hoenn.md
+- シンオウ地方 @/docs/04_references/01_pokedex/05_region-sinnoh.md
+- イッシュ地方 @/docs/04_references/01_pokedex/06_region-unova.md
+- カロス地方 @/docs/04_references/01_pokedex/07_region-kalos.md
+- アローラ地方 @/docs/04_references/01_pokedex/08_region-alola.md
+- ヒスイ地方 @/docs/04_references/01_pokedex/09_region-hisui.md
+- ガラル地方 @/docs/04_references/01_pokedex/10_region-galar.md
+- パルデア地方 @/docs/04_references/01_pokedex/11_region-paldea.md
