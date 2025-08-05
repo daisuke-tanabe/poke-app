@@ -48,5 +48,4 @@ In principle, proceed with Test-Driven Development (TDD) as advocated by Takuto 
 
 - コーディングガイドライン @/docs/CODING_GUIDELINES.md
 - コーディングルール @/docs/CODING_RULES.md
-- コミットルール @/docs/COMMIT_MESSAGE_RULES.md
 - コンポーネント設計ルール @/docs/COMPONENT_DESIGN_RULES.md
