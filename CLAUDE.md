@@ -9,9 +9,9 @@
 ## 02_project
 
 - 要件定義書 @/docs/02_project/01_requirement.md
-- システム設計 @/docs/02_project/02_system-design.md
-- データベース設計 @/docs/02_project/03_database-design.md
-- 機能仕様書 @/docs/02_project/04_functional-specifications.md
+- 機能仕様書 @/docs/02_project/02_functional-specifications.md
+- システム設計 @/docs/02_project/03_system-design.md
+- データベース設計 @/docs/02_project/04_database-design.md
 
 ## 03_development
 

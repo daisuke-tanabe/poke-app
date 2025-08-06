@@ -30,7 +30,7 @@
 - `pokedexes`テーブル: 各図鑑情報を管理（region_idで地方と紐付け）
 - `pokedex_entries`テーブル: 各図鑑に含まれるポケモンの番号を管理
 
-詳細は[データベース設計書](/docs/02_project/03_database-design.md)を参照してください。
+詳細は[データベース設計書](/docs/02_project/04_database-design.md)を参照してください。
 
 ## 地方別図鑑一覧
 
