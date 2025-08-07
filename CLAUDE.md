@@ -5,6 +5,8 @@
 ## 01_core
 
 - 基本原則 @/docs/01_core/01_principles.md
+- 要件定義書作成ガイドライン @/docs/01_core/02_requirements-guidelines.md
+- 機能仕様書作成ガイドライン @/docs/01_core/03_functional-specifications-guidelines.md
 
 ## 02_project
 
