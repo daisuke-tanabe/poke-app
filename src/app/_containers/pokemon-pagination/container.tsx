@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { searchPokedexEntriesWithForms } from '@/data/pokemon';
+import { searchPokedexEntriesWithForms } from '@/service/pokemon';
 
 import { PokemonSearchPresentational } from './presentational';
 

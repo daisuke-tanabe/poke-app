@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { cn, findOrThrow, assertFound } from './utils';
+import { cn, findOrThrow, assertFound } from '../utils';
 
 describe('cn', () => {
   it('should merge classes correctly', () => {

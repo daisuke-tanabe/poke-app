@@ -1,7 +1,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useReducer } from 'react';
 
-import { searchParamsSchema } from '@/lib/searchParamsSchema';
+import { searchParamsSchema } from '@/shared/lib';
 
 // 状態の型定義
 type SearchFormState = {

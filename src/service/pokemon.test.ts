@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/shared/lib';
 
 import { searchPokedexEntriesWithForms, listAllTypes, listRegionsWithPokedexes } from './pokemon';
 

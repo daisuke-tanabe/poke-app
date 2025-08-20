@@ -20,7 +20,8 @@
 - コーディングガイドライン @/docs/03_development/01_coding-guidelines.md
 - コーディングルール @/docs/03_development/02_coding-rules.md
 - コンポーネント設計 @/docs/03_development/03_component-design.md
-- 開発ワークフロー @/docs/03_development/04_development-workflow.md
+- 開発ワークフロー @/docs/03_development/xx_development-workflow.md
+-  ディレクトリルール @/docs/03_development/xx_directory-rules.md
 
 ## 04_references
 

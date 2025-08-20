@@ -1,7 +1,8 @@
 import { ThemeProvider } from 'next-themes';
 
 import './globals.css';
-import { HeaderContainer } from './_containers/header';
+import { AppFooter } from '@/features/AppFooter';
+import { AppHeader } from '@/features/AppHeader';
 
 import type { Metadata } from 'next';
 
@@ -20,49 +21,9 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="flex min-h-screen flex-col">
-            <HeaderContainer />
+            <AppHeader />
             <div className="flex-1">{children}</div>
-            <footer className="py-4 text-center text-xs leading-5">
-              当サイトは非公式のファンサイトです。
-              <br />
-              ポケモンおよび関連する画像・名称等の著作権・商標権は、
-              <a
-                href="https://www.pokemon.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                ポケモン
-              </a>
-              、
-              <a
-                href="https://www.nintendo.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                任天堂
-              </a>
-              、
-              <a
-                href="https://www.gamefreak.co.jp"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                ゲームフリーク
-              </a>
-              、
-              <a
-                href="https://www.creatures.co.jp"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                クリーチャーズ
-              </a>
-              に帰属します。
-            </footer>
+            <AppFooter />
           </div>
         </ThemeProvider>
       </body>

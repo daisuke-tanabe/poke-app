@@ -1,7 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/shared/lib';
 
 import { groupEntriesByPokemon, paginateAndFormatResults } from './utils/dataTransformers';
 import { buildSearchFilters } from './utils/searchFilters';

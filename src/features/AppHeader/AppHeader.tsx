@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
-import { ThemeToggleButton } from './components/ThemeToggleButton';
+import { ThemeToggleButton } from './_components/ThemeToggleButton';
 
-export function HeaderContainer() {
+export function AppHeader() {
   return (
     <header className="mb-6 shadow-[0_1px_0_0_rgba(0,0,0,0.15)] dark:shadow-[0_1px_0_0_rgba(0,0,0,0.4)]">
       <div className="container mx-auto max-w-6xl px-6">

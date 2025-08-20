@@ -1,4 +1,4 @@
-import { searchParamsSchema } from '@/lib/searchParamsSchema';
+import { searchParamsSchema } from '@/shared/lib';
 
 import { PokemonGridContainer } from './_containers/pokemon-grid';
 import { PokemonPaginationContainer } from './_containers/pokemon-pagination';
